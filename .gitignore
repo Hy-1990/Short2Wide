@@ -1,0 +1,19 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+!.env.example
+.production/
+.impeccable/
+.taste-skill/
+*.log
+credentials.json
+dreamapi.json
+runs/
+projects/
+node_modules/
+# Local design process; public product documentation lives in docs/.
+DESIGN.md
+PRODUCT.md

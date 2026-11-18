@@ -29,21 +29,45 @@ The homepage displays existing projects with recognizable thumbnails, generation
 
 ## Install and run
 
-Requires Python **3.10+**, FFmpeg/ffprobe, and Node **22+ only for JavaScript regression tests**.
+**1. Prerequisites:** Python 3.10+ and FFmpeg. On macOS with Homebrew, install missing prerequisites with `brew install python ffmpeg`. Both `ffmpeg` and `ffprobe` must be on PATH. See the [FFmpeg formula](https://formulae.brew.sh/formula/ffmpeg).
+
+**2. Download and install Python packages:**
 
 ```sh
 git clone https://github.com/Hy-1990/Short2Wide.git
 cd Short2Wide
+python3 -m pip install -r requirements.txt
+```
+
+The two direct Python dependencies are `requests` and `yt-dlp`. Use your existing Python; there is no environment creation or activation step.
+
+If Homebrew Python reports `externally-managed-environment`, install into your user directory instead:
+
+```sh
+python3 -m pip install --user --break-system-packages -r requirements.txt
+```
+
+This uses pip's [user-install and externally-managed options](https://pip.pypa.io/en/stable/cli/pip_install/); it does not change pip configuration or install into Homebrew's package directory.
+
+**3. Start:**
+
+```sh
 bash start.sh
 ```
 
-On macOS/Linux, the script creates `.venv`, installs the required Python packages and starts the server in the foreground. Later runs reuse the environment. It prints the address after the server starts. Keep the terminal open; press `Ctrl+C` to stop. To use another port: `bash start.sh --port 4179`.
+Startup prints:
 
-Install FFmpeg separately and ensure `ffmpeg` and `ffprobe` are on PATH. On Windows, use WSL for the Bash script, or run `python -m venv .venv`, `.venv\Scripts\activate`, `python -m pip install -r requirements.txt`, then `python -B server.py --port 4178`.
+```text
+Short2Wide
+  访问 / Open: http://127.0.0.1:4178/
+  按 Ctrl+C 停止 / Press Ctrl+C to stop.
+```
 
-Open **http://127.0.0.1:4178/**. Configure the key through **DreamAPI** in the top right. Light/dark/system appearance and Chinese/English preferences persist across routes.
+Open [http://127.0.0.1:4178/](http://127.0.0.1:4178/), configure your key through **DreamAPI** in the top right, then import a link or file. Generate the segments, review the results, and click **Confirm all & export**.
 
-The DreamAPI adapter is bundled in `scripts/dreamapi.py`; no agent skill or external AI coding environment is required. Use `server.py`, not a static file server.
+Next time, run `bash start.sh` from the project folder. Keep the terminal open; press `Ctrl+C` to stop. If the port is occupied, stop the earlier process or run `bash start.sh --port 4179` and use the printed address.
+
+On Windows, use `python -m pip install -r requirements.txt` and `python -B server.py` after installing Python and FFmpeg. The bundled DreamAPI adapter needs no agent skill or AI coding environment. Node is only needed for development tests.
 
 ## Data and recovery
 
@@ -65,9 +89,11 @@ The DreamAPI adapter is bundled in `scripts/dreamapi.py`; no agent skill or exte
 
 ## Verification
 
+Node 22+ is needed only for JavaScript tests.
+
 ```sh
-node --test test_playback.mjs
-python -B -m unittest -q test_pipeline.py test_server.py test_provider.py
+node --test tests/test_playback.mjs
+python -B -m unittest discover -s tests -t . -q
 ```
 
 Tests use temporary media, stub provider responses and an isolated local server; they do not submit paid generation tasks. They cover independent playback, sync restarts, one-click export, original-audio previews/exports, history metadata, alignment recovery, uncertain task responses and credential boundaries. See [verification notes](docs/verification.md).

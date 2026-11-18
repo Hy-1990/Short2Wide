@@ -140,7 +140,7 @@ def import_link(project_id, url):
     path = folder(project_id)
     try:
         mutate(project_id, message='下载视频…')
-        run(['yt-dlp', '--no-playlist', '--no-warnings', '--max-filesize', '512M', '--match-filter', 'duration < 300', '--no-write-info-json', '--no-write-thumbnail', '--merge-output-format', 'mp4', '-f', 'bv*[height<=1080]+ba/b[height<=1080]', '-o', str(path / 'download.%(ext)s'), '--', url], timeout=240)
+        run([sys.executable, '-m', 'yt_dlp', '--no-playlist', '--no-warnings', '--max-filesize', '512M', '--match-filter', 'duration < 300', '--no-write-info-json', '--no-write-thumbnail', '--merge-output-format', 'mp4', '-f', 'bv*[height<=1080]+ba/b[height<=1080]', '-o', str(path / 'download.%(ext)s'), '--', url], timeout=240)
         files = [f for f in path.glob('download.*') if f.suffix in ('.mp4', '.mkv', '.webm', '.mov')]
         if len(files) != 1:
             raise WorkflowError('下载未完成；视频可能受登录限制或不小于5分钟。可以改用本地文件。')

@@ -23,7 +23,7 @@ async function setup(shotOverrides={}){
  get('#audio-mode').value='original';
  const project={id:'a'.repeat(32),name:'test',status:'ready',ratio:'16:9',busy:false,error:'',audio:true,configured:true,export_ready:false,shots:[{index:0,start:10,end:20,duration:10,status:'review',generated_duration:12,generated_audio:true,version:1,anchors:[],prompt:'',task_id:'existing',reviewed:false,...shotOverrides}]};
  const context={window:{reframeI18n:{addMessages(){},t:s=>s,language:()=> 'zh'},reframeUI:{message:e=>e?.message||e,toast(){}},addEventListener(){}},document:{querySelector:get,createElement:()=>new Element(),createTextNode:s=>s,addEventListener(){}},location:{search:`?id=${project.id}`},URLSearchParams,AbortSignal,Date,Promise,Map,WeakMap,Number,String,Math,JSON,console,queueMicrotask,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},confirm:()=>true,fetch:async()=>({ok:true,json:async()=>structuredClone(project)})};
- vm.runInNewContext(readFileSync(new URL('./project.js',import.meta.url),'utf8'),context);
+ vm.runInNewContext(readFileSync(new URL('../project.js',import.meta.url),'utf8'),context);
  for(let i=0;i<12;i++)await Promise.resolve();
  return {get,source:get('#source-video'),result:get('#result-video')};
 }

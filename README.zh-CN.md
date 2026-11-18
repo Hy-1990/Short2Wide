@@ -29,21 +29,45 @@ https://github.com/user-attachments/assets/d491bf93-465d-4457-af80-4c962772e220
 
 ## 安装运行
 
-需要 Python **3.10+**、FFmpeg/ffprobe。Node **22+ 仅用于 JavaScript 回归测试**。
+**1. 准备环境：** Python 3.10+ 和 FFmpeg。macOS 已安装 Homebrew 时，可用 `brew install python ffmpeg` 安装缺少的程序。终端需能运行 `python3`、`ffmpeg`、`ffprobe`。参见 [FFmpeg 安装说明](https://formulae.brew.sh/formula/ffmpeg)。
+
+**2. 下载项目、安装 Python 依赖：**
 
 ```sh
 git clone https://github.com/Hy-1990/Short2Wide.git
 cd Short2Wide
+python3 -m pip install -r requirements.txt
+```
+
+Python 直接依赖只有 `requests` 和 `yt-dlp`。直接使用已有 Python，不需要创建或激活任何环境。
+
+如果 Homebrew Python 提示 `externally-managed-environment`，改用用户目录安装：
+
+```sh
+python3 -m pip install --user --break-system-packages -r requirements.txt
+```
+
+这是 pip 提供的[用户目录安装及管理环境选项](https://pip.pypa.io/en/stable/cli/pip_install/)，不修改 pip 全局配置，也不把依赖写进 Homebrew 的包目录。
+
+**3. 启动：**
+
+```sh
 bash start.sh
 ```
 
-macOS/Linux 下，脚本自动创建 `.venv`、安装 Python 依赖并在前台启动；后续运行复用环境。启动成功后会打印访问地址。保持终端开启，按 `Ctrl+C` 停止。更换端口：`bash start.sh --port 4179`。
+启动成功后，终端会显示：
 
-FFmpeg 需单独安装，并确保 `ffmpeg`、`ffprobe` 在 PATH 中。Windows 可通过 WSL 使用脚本；或依次运行 `python -m venv .venv`、`.venv\Scripts\activate`、`python -m pip install -r requirements.txt`、`python -B server.py --port 4178`。
+```text
+Short2Wide
+  访问 / Open: http://127.0.0.1:4178/
+  按 Ctrl+C 停止 / Press Ctrl+C to stop.
+```
 
-打开 [http://127.0.0.1:4178/](http://127.0.0.1:4178/)，通过右上角 DreamAPI 配置密钥。明暗/跟随系统主题与中英文选项跨页面保留。
+浏览器打开 [http://127.0.0.1:4178/](http://127.0.0.1:4178/)，点击右上角 **DreamAPI** 配置密钥，然后粘贴视频链接或上传文件。逐段生成并检查结果，最后点击一次“确认全部并导出”。
 
-项目已内置 `scripts/dreamapi.py`，不需要安装任何 agent skill。启动必须使用 `server.py`。
+以后进入项目目录，执行 `bash start.sh` 即可。保持终端开启，按 `Ctrl+C` 停止。如果端口被占用，先停止之前的进程，或使用 `bash start.sh --port 4179`，打开终端打印的地址。
+
+Windows 安装 Python 和 FFmpeg 后，运行 `python -m pip install -r requirements.txt`，再运行 `python -B server.py`。项目已内置 DreamAPI 适配器，不需要安装 agent skill 或 AI 编程工具；正常使用也不需要 Node。
 
 ## 数据与恢复
 
@@ -64,9 +88,11 @@ FFmpeg 需单独安装，并确保 `ffmpeg`、`ffprobe` 在 PATH 中。Windows �
 
 ## 验证
 
+Node 22+ 仅用于 JavaScript 测试，正常使用不需要。
+
 ```sh
-node --test test_playback.mjs
-python -B -m unittest -q test_pipeline.py test_server.py test_provider.py
+node --test tests/test_playback.mjs
+python -B -m unittest discover -s tests -t . -q
 ```
 
 自动测试使用临时素材与替代接口响应，不提交计费任务。[完整验证记录](docs/verification.md)

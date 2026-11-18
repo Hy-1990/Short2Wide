@@ -12,13 +12,9 @@ done
 
 python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else "Python 3.10+ is required.")'
 
-if [[ ! -x .venv/bin/python ]]; then
-    echo "Creating Python environment..."
-    python3 -m venv .venv
+if ! python3 -c 'import requests, yt_dlp' 2>/dev/null; then
+    echo "Install dependencies first: python3 -m pip install -r requirements.txt" >&2
+    exit 1
 fi
 
-echo "Checking Python dependencies (first run may download packages)..."
-.venv/bin/python -m pip install --disable-pip-version-check --quiet -r requirements.txt
-
-export PATH="$PWD/.venv/bin:$PATH"
-exec .venv/bin/python -B server.py "$@"
+exec python3 -B server.py "$@"

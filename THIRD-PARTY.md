@@ -5,7 +5,7 @@ Application code is MIT licensed. Demo media is not included in that software li
 ## Fonts
 
 - DM Sans 400/500: Google Fonts / Fontsource, SIL Open Font License 1.1. License: `assets/DM-Sans-LICENSE.txt`.
-- Noto Sans SC, promotion-only subset: Google Fonts, SIL Open Font License 1.1. License: `assets/Noto-Sans-SC-LICENSE.txt`.
+- Finished promotion videos use Noto Sans SC (Google Fonts, SIL Open Font License 1.1). Production-only fonts and render scripts are not part of the application distribution.
 - Noto Serif SC, homepage-only subset: Google Fonts, SIL Open Font License 1.1. License: `assets/Noto-Serif-SC-LICENSE.txt`.
 
 ## Runtime services and tools

@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch,Mock
 import requests
-spec=importlib.util.spec_from_file_location('provider',Path(__file__).parent/'scripts/dreamapi.py');provider=importlib.util.module_from_spec(spec);spec.loader.exec_module(provider)
+spec=importlib.util.spec_from_file_location('provider',Path(__file__).resolve().parents[1]/'scripts/dreamapi.py');provider=importlib.util.module_from_spec(spec);spec.loader.exec_module(provider)
 class ProviderTests(unittest.TestCase):
     def test_query_never_submits_a_new_task_and_retries_only_the_same_id(self):
         result={'task':{'taskId':'existing','status':3},'videos':[{'videoUrl':'https://example.invalid/result.mp4'}]}

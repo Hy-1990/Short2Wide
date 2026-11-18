@@ -30,3 +30,9 @@ The owner explicitly authorized one retry with model-audio generation disabled. 
 Both segments completed with model audio disabled. One confirmation then exported the full 15-second video at 1280 × 720, with AAC audio sourced from the original. Original/export decoded mono audio correlation was 0.999415 at 8 kHz. This verifies the soundtrack source, not visual-event synchronization.
 
 The actual model result reconstructs the scene and changes camera movement and event timing. Duration normalization does not prove precise semantic or lip synchronization. This landscape clip is not a validation of speech, numbers, text or lip sync.
+
+## Installation and distribution checks
+
+The Bash launcher was verified with the existing system Python, without creating an environment or installing packages during launch. Startup from outside the project directory returned HTTP 200 at the printed URL; Ctrl+C shutdown and occupied-port handling were checked. On the tested Homebrew Python, pip required explicit user-directory installation with `--user --break-system-packages`, as documented in both READMEs. The downloader runs through the same Python interpreter, so a user-site CLI directory does not need to be added to PATH.
+
+Tests are grouped under `tests/`. Production-only movie rendering scripts/fonts and local agent instructions are excluded from the public distribution; the actual application assets, finished films, source/result examples and license notices remain.

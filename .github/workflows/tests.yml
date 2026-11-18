@@ -17,5 +17,5 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - run: python -m pip install -r requirements.txt
       - run: bash -n start.sh
-      - run: node --test test_playback.mjs
-      - run: python -B -m unittest -q test_pipeline.py test_server.py test_provider.py
+      - run: node --test tests/test_playback.mjs
+      - run: python -B -m unittest discover -s tests -t . -q

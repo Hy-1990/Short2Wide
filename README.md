@@ -6,7 +6,7 @@ A local workspace for reframing short videos with **DreamAPI Seedance 2.5**. Imp
 
 [![Short2Wide product film](docs/assets/preview.en.gif)](docs/assets/short2wide-en.mp4)
 
-[Watch the 20-second film](docs/assets/short2wide-en.mp4) · [Workflow and limitations](docs/showcase.md)
+25 fps preview · [Watch the full film at 30 fps](docs/assets/short2wide-en.mp4) · [Workflow and limitations](docs/showcase.md)
 
 > Bring your own DreamAPI key. The application runs locally; generation uploads reference segments to a paid cloud service. The model can reject media or produce imperfect text, motion and timing.
 

@@ -6,7 +6,7 @@
 
 [![Short2Wide 产品短片](docs/assets/preview.zh-CN.gif)](docs/assets/short2wide-zh-CN.mp4)
 
-[观看 20 秒短片](docs/assets/short2wide-zh-CN.mp4) · [流程与边界](docs/showcase.md)
+25 fps 预览 · [观看完整 30 fps 短片](docs/assets/short2wide-zh-CN.mp4) · [流程与边界](docs/showcase.md)
 
 > 需要自备 DreamAPI 密钥。应用在本机运行，生成时会把参考片段传至付费云服务。模型可能拒绝素材，也可能产生文字、动作或时序偏差。
 

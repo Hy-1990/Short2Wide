@@ -2,7 +2,7 @@
 
 ## Automated checks
 
-Suite: 4 Node playback tests and 15 Python tests, including a native Windows launcher smoke test (skipped on other platforms). Tests use temporary fixtures and do not generate paid requests.
+Suite: 4 Node playback tests and 18 Python tests, including a native Windows launcher smoke test (skipped on other platforms). Tests use temporary fixtures and do not generate paid requests.
 
 - Independent left/right playback and seeking; solo actions release sync without controlling the other player.
 - Every explicit sync start restarts the selected source segment and generated result together.
@@ -11,6 +11,7 @@ Suite: 4 Node playback tests and 15 Python tests, including a native Windows lau
 - FFmpeg preparation, short silent video, timeline coverage and exact source-audio selection in previews and exports.
 - Failed alignment preserves the prior playable result; successful alignment invalidates the old preview cache.
 - Project summaries preserve original project IDs and expose progress, thumbnails and export status.
+- Project deletion requires strict explicit confirmation, rejects cross-origin requests, blocks active projects, refuses symlink escapes, and retains media for manual recovery. Repeated deletion is idempotent.
 - Task-query errors retain the same task ID. Unknown submissions block new requests. Explicit remote terminal failure is distinguished from transport/parse errors.
 - Credential storage is private and never returned by the API. Cross-origin mutations and private static-file access are rejected.
 - The bundled provider's query path never submits a new task; output-audio generation can be disabled explicitly.
@@ -48,3 +49,11 @@ Project JSON, FFmpeg manifests and provider subprocess streams explicitly use UT
 Browser verification used actual local projects plus an isolated, mutation-disabled layout fixture service. With twelve fixture entries, Projects rendered twelve cards across responsive rows; name search selected one match, the exported filter selected four, and Home retained six recent cards while navigation showed the full count. Search no-match/clear, empty library, failed-load/refresh recovery, the help route, import validation, and New reframe input focus were exercised in Chinese/English and light/dark. Layout widths 1280, 768 and 390 had no horizontal overflow. Fixture entries were never written into the user's project directory. Public README captures contain only the creator-owned actual completed cloud-walk project.
 
 This UI update changes no generation, playback, cue alignment or export semantics. Original local project file hashes were verified separately; obsolete homepage-only media and type assets were moved out of the distribution.
+
+## Narrow windows and confirmed deletion (v0.1.8)
+
+The sidebar remains visible at 699px and 561px; top navigation starts at 560px. Layouts at 390, 560, 561, 699 and 1280px were inspected. The user’s external Chrome tab was 1920px with stale HTML; a refresh displayed the sidebar. CSS/JS asset URLs are versioned for this update.
+
+Deletion was exercised against a separate temporary project directory and the real DELETE handler: Cancel left four entries, confirmation removed only the selected test project and reduced the count to three, and its media remained in the temporary recovery folder. Busy deletion was disabled. A simulated file-access failure kept the project and dialog open with English inline/toast feedback; keyboard focus returned to Cancel. Escape closed the dialog without deleting. Confirmation was inspected at 390, 699 and 1280px, including Chinese/English and light/dark. No real user project was deleted and no paid generation was submitted.
+
+The main app’s existing process was left running; the new backend endpoint becomes available after restarting with the normal launcher. The interface reports this explicitly when an older server does not recognize deletion. Both README home captures now show the current card controls and the creator-owned actual Cloudwalk record only. Editor captures remain current because this release does not change the editor.

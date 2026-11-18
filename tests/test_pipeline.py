@@ -1,5 +1,6 @@
 import json
 import math
+import os
 import struct
 import tempfile
 import unittest
@@ -9,6 +10,36 @@ import pipeline
 
 
 class PipelineTests(unittest.TestCase):
+    def test_delete_preserves_project_files_for_recovery_and_blocks_busy_projects(self):
+        with tempfile.TemporaryDirectory() as directory, patch.object(pipeline, 'DATA', Path(directory)/'projects'):
+            project=pipeline.create('待删除项目 中文.mp4','16:9');pid=project['id'];root=pipeline.folder(pid)
+            other=pipeline.create('Keep.mp4','9:16')
+            (root/'input.media').write_bytes(b'original project media')
+            (root/'shot-0-generated.mp4').write_bytes(b'generated media')
+            outside=Path(directory)/'original-upload.mp4';outside.write_bytes(b'external upload')
+            pipeline.ACTIVE.add(pid)
+            try:
+                with self.assertRaises(pipeline.WorkflowError):pipeline.delete_project(pid)
+                self.assertTrue(root.is_dir())
+            finally:pipeline.ACTIVE.discard(pid)
+            destination=pipeline.DATA.resolve().parent/'trash'/pipeline.delete_project(pid)
+            self.assertFalse(root.exists())
+            self.assertEqual((destination/'input.media').read_bytes(),b'original project media')
+            self.assertEqual((destination/'shot-0-generated.mp4').read_bytes(),b'generated media')
+            self.assertEqual(outside.read_bytes(),b'external upload')
+            self.assertEqual([p['id'] for p in pipeline.project_summaries()['projects']],[other['id']])
+            self.assertIsNone(pipeline.delete_project(pid))
+            destination.rename(root)
+            self.assertEqual(pipeline.load(pid)['name'],'待删除项目 中文.mp4')
+
+    @unittest.skipIf(os.name=='nt','Creating a symlink requires additional Windows privileges')
+    def test_delete_never_follows_a_project_directory_symlink(self):
+        with tempfile.TemporaryDirectory() as directory, patch.object(pipeline, 'DATA', Path(directory)/'projects'):
+            pipeline.DATA.mkdir();outside=Path(directory)/'outside';outside.mkdir();(outside/'keep.txt').write_text('keep')
+            project_id='a'*32;pipeline.folder(project_id).symlink_to(outside,target_is_directory=True)
+            with self.assertRaises(pipeline.WorkflowError):pipeline.delete_project(project_id)
+            self.assertEqual((outside/'keep.txt').read_text(),'keep')
+
     def test_cut_plan_covers_timeline_without_tiny_tail(self):
         for duration in (1.2, 4, 12.2, 25, 128.7, 299.9):
             pieces = pipeline.plan_segments(duration, [8.8, 10.4, 24, 100])

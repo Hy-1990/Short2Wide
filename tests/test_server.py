@@ -80,6 +80,26 @@ class SettingsTests(unittest.TestCase):
         self.assertEqual(self.request('GET', '/assets/../server.py')[0], 404)
         self.assertEqual(self.request('GET', '/assets/')[0], 404)
 
+    def test_project_deletion_requires_confirmation_and_respects_active_work(self):
+        with patch.object(pipeline,'DATA',Path(self.temp.name)/'projects'):
+            project=pipeline.create('Delete confirmation test.mp4','16:9');pid=project['id'];root=pipeline.folder(pid)
+            (root/'input.media').write_bytes(b'preserve this media')
+            route=f'/api/projects/{pid}';headers={'Content-Type':'application/json','Origin':self.origin}
+            for payload in ({},{'confirm':False},{'confirm':1},{'confirm':'true'}):
+                self.assertEqual(self.request('DELETE',route,json.dumps(payload),headers)[0],400)
+                self.assertTrue(root.exists())
+            self.assertEqual(self.request('DELETE',route,'{"confirm":true}',{**headers,'Origin':'https://other.example'})[0],403)
+            self.assertEqual(self.request('DELETE',route,'{"confirm":true}',{**headers,'Content-Type':'text/plain'})[0],415)
+            pipeline.ACTIVE.add(pid)
+            try:self.assertEqual(self.request('DELETE',route,'{"confirm":true}',headers)[0],409)
+            finally:pipeline.ACTIVE.discard(pid)
+            status,body=self.request('DELETE',route,'{"confirm":true}',headers)
+            self.assertEqual(status,200);self.assertTrue(json.loads(body)['deleted']);self.assertFalse(root.exists())
+            self.assertEqual(json.loads(self.request('GET','/api/projects')[1])['projects'],[])
+            archived=list((pipeline.DATA.parent/'trash').glob('*/input.media'))
+            self.assertEqual(len(archived),1);self.assertEqual(archived[0].read_bytes(),b'preserve this media')
+            self.assertEqual(self.request('DELETE',route,'{"confirm":true}',headers)[0],200)
+
 
 if __name__ == '__main__':
     unittest.main()

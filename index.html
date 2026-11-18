@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6f5f1"><meta name="description" content="把已有视频改成新的画幅，保留原音，逐段核对"><title>画幅工作台</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><script src="preferences.js"></script><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="settings.css"><link rel="stylesheet" href="home.css?v=0.1.7"><script src="i18n.js" defer></script><script src="ui-feedback.js" defer></script><script src="settings.js" defer></script><script src="home.js?v=0.1.7" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6f5f1"><meta name="description" content="把已有视频改成新的画幅，保留原音，逐段核对"><title>画幅工作台</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><script src="preferences.js"></script><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="settings.css"><link rel="stylesheet" href="home.css?v=0.1.8-32a8d8cc"><script src="i18n.js" defer></script><script src="ui-feedback.js" defer></script><script src="settings.js" defer></script><script src="home.js?v=0.1.8-6214ab9b" defer></script></head>
 <body class="home-page">
 <a class="skip-link" href="#home-main">跳到主要内容</a>
 <svg class="svg-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -33,7 +33,7 @@
 <form id="import-video" class="import-form" novalidate><label class="sr-only" for="home-source">视频链接</label><div class="import-input-wrap"><svg><use href="#i-link"/></svg><input id="home-source" type="url" placeholder="粘贴 YouTube / TikTok 链接" autocomplete="off" aria-describedby="import-help import-error"><button type="submit" class="button button-primary"><span>开始改编</span><svg><use href="#i-arrow"/></svg></button></div><div class="home-import-options"><div class="home-ratios" role="group" aria-label="目标画幅"><button type="button" class="active" data-home-ratio="16:9" aria-pressed="true"><span class="format-icon horizontal"></span><span>横屏</span><small>16:9</small></button><button type="button" data-home-ratio="9:16" aria-pressed="false"><span class="format-icon vertical"></span><span>竖屏</span><small>9:16</small></button></div><button type="button" id="home-upload" class="local-upload"><svg><use href="#i-upload"/></svg><span id="home-file-name">上传视频</span></button><input id="home-file" type="file" accept="video/*" hidden></div><p id="import-error" class="home-error" role="alert" hidden></p><p class="import-help" id="import-help">支持小于5分钟的视频</p></form>
     </section>
     <section id="project-library" class="project-library" aria-labelledby="projects-title">
-      <div class="projects-heading"><div><h2 id="projects-title">最近项目</h2><span id="projects-count" data-no-translate></span></div><div class="projects-actions"><button type="button" id="refresh-projects" class="text-button" hidden>刷新</button><a href="#projects" id="all-projects-link">查看全部<svg><use href="#i-arrow"/></svg></a></div></div>
+      <div class="projects-heading"><div><h2 id="projects-title" tabindex="-1">最近项目</h2><span id="projects-count" data-no-translate></span></div><div class="projects-actions"><button type="button" id="refresh-projects" class="text-button" hidden>刷新</button><a href="#projects" id="all-projects-link">查看全部<svg><use href="#i-arrow"/></svg></a></div></div>
       <div class="project-filters" id="project-filters" hidden>
         <label class="project-search"><svg><use href="#i-search"/></svg><input id="project-search" type="search" placeholder="搜索项目名称" aria-label="搜索项目名称" autocomplete="off"></label>
         <label class="project-status-filter"><span class="sr-only">项目状态</span><select id="project-filter" aria-label="项目状态"><option value="all">全部状态</option><option value="exported">已导出</option><option value="unfinished">未完成</option></select><svg><use href="#i-down"/></svg></label>
@@ -53,4 +53,12 @@
     </section>
   </main>
 </div>
+<dialog id="delete-project-dialog" class="delete-dialog" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
+  <h2 id="delete-dialog-title">删除这个项目？</h2>
+  <p id="delete-project-name" class="delete-project-name" data-no-translate></p>
+  <p id="delete-dialog-description">项目及其视频将移入本机回收目录，之后可手动恢复。</p>
+  <p id="delete-cloud-note" class="delete-cloud-note" hidden>已提交的云端生成任务不会因此取消。</p>
+  <p id="delete-project-error" class="home-error" role="alert" hidden></p>
+  <div class="delete-dialog-actions"><button id="cancel-delete-project" type="button" class="button button-secondary" autofocus>取消</button><button id="confirm-delete-project" type="button" class="button button-danger">删除项目</button></div>
+</dialog>
 </body></html>

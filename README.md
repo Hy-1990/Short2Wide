@@ -25,9 +25,11 @@ Optional two-cue timing correction and model-audio generation are folded into **
 
 The left sidebar separates **Home** from **Projects**. Home offers video import and the six most recent projects. Projects shows the complete library with name search and exported/unfinished filters. Cards wrap into additional rows as the library grows; the project count stays visible in navigation. Open a card to continue, or download a completed export directly.
 
-**New reframe** returns to and focuses the import field. **How to use** opens a separate guide; the old decorative workflow footer is removed. On phones, navigation moves to a compact top area. Theme, language and DreamAPI controls remain available.
+**New reframe** returns to and focuses the import field. **How to use** opens a separate guide; the old decorative workflow footer is removed. Narrow desktop windows keep the sidebar; only screens 560 px wide or less use compact top navigation. Theme, language and DreamAPI controls remain available.
 
 ![Local project library](docs/assets/home.en.jpg)
+
+Use the trash button on a project card to delete it. A second confirmation names the project; **Cancel** keeps it unchanged. Confirming removes it from Home and Projects and moves its files into the local recovery folder. Processing projects cannot be deleted. Deleting a project does not cancel a previously submitted cloud generation task. See recovery paths below.
 
 ## Install and run
 
@@ -95,6 +97,8 @@ Open [http://127.0.0.1:4178/](http://127.0.0.1:4178/), configure your key throug
 
 Keep the terminal open. Press `Ctrl+C` to stop; if Command Prompt asks whether to terminate the batch job, enter `Y`. Next time, just run the launcher for your platform. If the port is occupied, stop the earlier server or choose another port.
 
+After updating the code, stop the running server with `Ctrl+C`, start it again with your platform’s launcher, and refresh the browser. Backend changes such as project deletion require a restart.
+
 The DreamAPI adapter is bundled; no agent skill, AI coding environment or Node installation is needed for normal use.
 
 ## Data and recovery
@@ -103,6 +107,7 @@ The DreamAPI adapter is bundled; no agent skill, AI coding environment or Node i
 - Keys are stored outside the repository at `~/.config/reframe-studio/dreamapi.json`, with 0600 permissions on macOS/Linux; Windows uses the permissions inherited from your user-profile directory. The app never persists them in browser storage or returns a saved key through its API.
 - On Windows, `~` means your user-profile folder: credentials are at `%USERPROFILE%\.config\reframe-studio\dreamapi.json`; projects are at `%USERPROFILE%\.local\share\reframe-studio\projects\`.
 - Projects remain at `~/.local/share/reframe-studio/projects/` to preserve compatibility with the original local prototype.
+- Deleted projects move to `~/.local/share/reframe-studio/trash/` (Windows: `%USERPROFILE%\.local\share\reframe-studio\trash\`). This is an application recovery folder, not the operating system’s Trash/Recycle Bin. To restore, stop the app and move the archived folder back to `projects/`, renaming it to the original 32-character project ID (the first 32 characters of the archive folder name, also stored in `project.json`), then restart. Do not overwrite an existing project. There is no in-app restore button yet. Files continue to occupy disk space until you manually remove the archived folder.
 - Uploading from the homepage transfers the file only to the local app. Clicking Generate uploads the reference segment to DreamAPI and may incur charges.
 - Task IDs are persisted. A timed-out query resumes the **same task**, never silently submits another. Ambiguous submissions without an ID stop for manual verification. New attempts preserve prior task information.
 - Failed local alignment preserves the previously playable result. Source and model-generated files are kept separately from local audio previews and exports.
@@ -125,7 +130,7 @@ node --test tests/test_playback.mjs
 python -B -m unittest discover -s tests -t . -q
 ```
 
-Tests use temporary media, stub provider responses and an isolated local server; they do not submit paid generation tasks. They cover independent playback, sync restarts, one-click export, original-audio previews/exports, history metadata, alignment recovery, uncertain task responses and credential boundaries. See [verification notes](docs/verification.md).
+Tests use temporary media, stub provider responses and an isolated local server; they do not submit paid generation tasks. They cover independent playback, sync restarts, one-click export, original-audio previews/exports, history metadata, confirmed project deletion and recovery, active-project guards, alignment recovery, uncertain task responses and credential boundaries. See [verification notes](docs/verification.md).
 
 ## License and media
 

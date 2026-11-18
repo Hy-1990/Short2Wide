@@ -231,6 +231,26 @@ class Handler(SimpleHTTPRequestHandler):
     def do_DELETE(self):
         if not self.local_request():
             return self.reply(403, {'error': 'origin'})
+        match = re.fullmatch(r'/api/projects/([0-9a-f]{32})', self.path)
+        if match:
+            if self.headers.get('Content-Type', '').split(';')[0] != 'application/json':
+                return self.reply(415, {'error': 'content_type'})
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if not 0 < length <= 1024:
+                    raise ValueError()
+                data = json.loads(self.rfile.read(length))
+                if not isinstance(data, dict) or data.get('confirm') is not True:
+                    raise ValueError()
+            except (ValueError, UnicodeDecodeError):
+                return self.reply(400, {'error': '请确认删除项目。'})
+            try:
+                pipeline.delete_project(match[1])
+            except pipeline.WorkflowError as error:
+                return self.reply(409, {'error': str(error)})
+            except OSError:
+                return self.reply(500, {'error': '删除失败，请关闭占用项目文件的窗口后重试。'})
+            return self.reply(200, {'id': match[1], 'deleted': True})
         if self.path != '/api/settings/dreamapi':
             return self.reply(404, {'error': 'not_found'})
         if self.headers.get('Content-Type', '').split(';')[0] != 'application/json':

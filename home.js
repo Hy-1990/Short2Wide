@@ -52,6 +52,40 @@ window.reframeI18n.addMessages({
  '确认并导出':'Confirm and export','全部片段生成后，点击一次“确认全部并导出”。成片使用原始音轨。':'Once every segment is generated, click Confirm all & export. The final video uses the original soundtrack.',
  '生成会产生模型费用。画面重建可能改变文字、动作和时序，原音保留不代表同步已保证，请逐段检查。':'Generation incurs model charges. Reconstruction can change text, motion and timing. Keeping the original soundtrack does not guarantee synchronization; review every segment.'
 });
+window.reframeI18n.addMessages({
+ '删除这个项目？':'Delete this project?','删除项目':'Delete project','取消':'Cancel','处理中，暂不能删除':'Processing; deletion unavailable',
+ '项目及其视频将移入本机回收目录，之后可手动恢复。':'The project and its videos will move to a local recovery folder. You can restore them manually.',
+ '已提交的云端生成任务不会因此取消。':'This does not cancel previously submitted cloud generation tasks.',
+ '项目已移入回收目录':'Project moved to the recovery folder','正在删除…':'Deleting…','请确认删除项目。':'Confirm project deletion.',
+ '项目正在处理中，请等待完成后再删除。':'This project is processing. Wait for it to finish before deleting.',
+ '项目目录异常，无法删除。':'The project directory is invalid. Deletion was blocked.','回收目录异常，无法删除。':'The recovery folder is invalid. Deletion was blocked.',
+ '删除失败，请关闭占用项目文件的窗口后重试。':'Could not remove the project. Close windows using its files and retry.',
+ '删除失败，请重试。':'Could not remove the project. Please retry.','请重启工作台以启用项目删除。':'Restart Short2Wide to enable project deletion.'
+});
+const deleteDialog=document.querySelector('#delete-project-dialog'),cancelDelete=document.querySelector('#cancel-delete-project'),confirmDelete=document.querySelector('#confirm-delete-project'),deleteError=document.querySelector('#delete-project-error');
+let selectedForDeletion=null,deletingProject=false,deleteOpener=null;
+function openDeleteProject(project,opener){
+ if(project.busy){window.reframeUI.toast('项目正在处理中，请等待完成后再删除。','error');return}
+ selectedForDeletion=project;deleteOpener=opener;deleteError.hidden=true;
+ document.querySelector('#delete-project-name').textContent=project.name==='Link import'?window.reframeI18n.t('视频项目'):project.name;
+ document.querySelector('#delete-cloud-note').hidden=!!project.export_ready;
+ deleteDialog.showModal();cancelDelete.focus();
+}
+function deleteBusy(value){deletingProject=value;confirmDelete.disabled=value;cancelDelete.disabled=value;confirmDelete.classList.toggle('is-working',value);confirmDelete.textContent=window.reframeI18n.t(value?'正在删除…':'删除项目');deleteDialog.setAttribute('aria-busy',String(value))}
+cancelDelete.onclick=()=>{if(!deletingProject)deleteDialog.close()};
+deleteDialog.addEventListener('cancel',event=>{if(deletingProject)event.preventDefault()});
+deleteDialog.addEventListener('close',()=>{selectedForDeletion=null;if(deleteOpener?.isConnected)deleteOpener.focus();else document.querySelector('#projects-title').focus()});
+confirmDelete.onclick=async()=>{
+ if(!selectedForDeletion||deletingProject)return;
+ const project=selectedForDeletion;deleteError.hidden=true;deleteBusy(true);
+ try{
+  const response=await fetch(`/api/projects/${project.id}`,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({confirm:true}),signal:AbortSignal.timeout(15000)});
+  if([404,405,501].includes(response.status))throw Error('请重启工作台以启用项目删除。');
+  const data=await response.json();if(!response.ok||data.deleted!==true)throw Error(data.error||'删除失败，请重试。');
+  projects=projects.filter(item=>item.id!==project.id);drawProjects();deleteDialog.close();window.reframeUI.toast('项目已移入回收目录','success');
+ }catch(error){deleteError.textContent=window.reframeUI.message(error);deleteError.hidden=false;window.reframeUI.toast(deleteError.textContent,'error')}
+ finally{deleteBusy(false);if(deleteDialog.open)cancelDelete.focus()}
+};
 const projectsGrid=document.querySelector('#projects-grid');
 const search=document.querySelector('#project-search'),statusFilter=document.querySelector('#project-filter');
 let projects=[],loadingProjects=false,projectsLoaded=false,projectsError=false,currentView='home';
@@ -80,7 +114,12 @@ function projectCard(project){
  const bottom=element('div','project-card-bottom'),date=new Date(project.updated*1000),time=element('time');time.dateTime=date.toISOString();
  time.textContent=new Intl.DateTimeFormat(tr.language()==='en'?'en-US':'zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(date);time.dataset.noTranslate='';
  const action=element('a','',t(project.export_ready?'下载成片':'继续编辑'));action.href=project.export_ready?`/media/${project.id}/export.mp4`:`project.html?id=${project.id}`;if(project.export_ready)action.download='reframed.mp4';
- bottom.append(time,action);card.append(link,bottom);return card;
+ const actions=element('div','project-card-actions');
+ const remove=element('button','project-delete');remove.type='button';remove.disabled=!!project.busy;
+ const deleteLabel=t(project.busy?'处理中，暂不能删除':'删除项目');remove.title=deleteLabel;remove.setAttribute('aria-label',`${deleteLabel}: ${title.textContent}`);
+ remove.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6m4-6v6"/></svg>';
+ remove.onclick=()=>openDeleteProject(project,remove);actions.append(action,remove);
+ time.title=time.textContent;bottom.append(time,actions);card.append(link,bottom);return card;
 }
 function drawProjects(){
  const t=window.reframeI18n.t,all=currentView==='projects';

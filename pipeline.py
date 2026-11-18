@@ -52,6 +52,26 @@ def folder(project_id):
     return DATA / project_id
 
 
+def delete_project(project_id):
+    """Remove a project from the library while retaining its files for recovery."""
+    with LOCK:
+        path = folder(project_id)
+        if project_id in ACTIVE:
+            raise WorkflowError('项目正在处理中，请等待完成后再删除。')
+        if not path.exists():
+            return None
+        root = DATA.resolve()
+        if path.is_symlink() or path.resolve() != root / project_id:
+            raise WorkflowError('项目目录异常，无法删除。')
+        trash = root.parent / 'trash'
+        if trash.is_symlink():
+            raise WorkflowError('回收目录异常，无法删除。')
+        trash.mkdir(mode=0o700, parents=True, exist_ok=True)
+        destination = trash / f'{project_id}-{uuid.uuid4().hex}'
+        path.rename(destination)
+        return destination.name
+
+
 def load(project_id):
     with LOCK:
         try:

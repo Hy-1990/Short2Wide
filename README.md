@@ -4,9 +4,9 @@
 
 A local workspace for reframing short videos with **DreamAPI Seedance 2.5**. Import a video under five minutes, generate in segments, compare both sides, and export with the original soundtrack.
 
-https://github.com/user-attachments/assets/b2b6c053-876b-4c61-84b5-139c0d3430ad
+[![Short2Wide workspace](docs/assets/workspace.en.jpg)](https://cdn.jsdelivr.net/gh/Hy-1990/Short2Wide@v0.1.10/docs/assets/short2wide-en.mp4)
 
-[Download the 20-second film · 30 fps](docs/assets/short2wide-en.mp4) · [Workflow and limitations](docs/showcase.md)
+[Watch the 20-second demo](https://cdn.jsdelivr.net/gh/Hy-1990/Short2Wide@v0.1.10/docs/assets/short2wide-en.mp4) · [Download the 20-second film · 30 fps](docs/assets/short2wide-en.mp4) · [Workflow and limitations](docs/showcase.md)
 
 > Bring your own DreamAPI key. The application runs locally; generation uploads reference segments to a paid cloud service. The model can reject media or produce imperfect text, motion and timing.
 
@@ -17,15 +17,13 @@ https://github.com/user-attachments/assets/b2b6c053-876b-4c61-84b5-139c0d3430ad
 3. **Compare** — play, pause and seek either video independently. **Play in sync** restarts both at the selected segment's beginning.
 4. **Export** — once every segment has a result, click **Confirm all & export** once. There is no per-segment approval checklist.
 
-![Short2Wide workspace](docs/assets/workspace.en.jpg)
-
 **Generate comparison audio** sits above the generation button and starts off for new segments. Exports use the original soundtrack. Open **Manual alignment** on a generated segment for two-cue timing correction.
 
 ## Home and project library
 
 The left sidebar separates **Home** from **Projects**. Home offers video import and the six most recent projects. Projects shows the complete library with name search and exported/unfinished filters. Cards wrap into additional rows as the library grows; the project count stays visible in navigation. Open a card to continue, or download a completed export directly.
 
-**New reframe** returns to and focuses the import field. **How to use** opens a separate guide; the old decorative workflow footer is removed. Narrow desktop windows keep the sidebar; only screens 560 px wide or less use compact top navigation. Theme, language and DreamAPI controls remain available.
+**New reframe** returns to and focuses the import field. **How to use** opens the workflow guide. Narrow desktop windows keep the sidebar; only screens 560 px wide or less use compact top navigation. Theme, language and DreamAPI controls remain available.
 
 ![Local project library](docs/assets/home.en.jpg)
 
@@ -109,7 +107,7 @@ The DreamAPI adapter is bundled; no agent skill, AI coding environment or Node i
 - Projects remain at `~/.local/share/reframe-studio/projects/` to preserve compatibility with the original local prototype.
 - Deleted projects move to `~/.local/share/reframe-studio/trash/` (Windows: `%USERPROFILE%\.local\share\reframe-studio\trash\`). This is an application recovery folder, not the operating system’s Trash/Recycle Bin. To restore, stop the app and move the archived folder back to `projects/`, renaming it to the original 32-character project ID (the first 32 characters of the archive folder name, also stored in `project.json`), then restart. Do not overwrite an existing project. There is no in-app restore button yet. Files continue to occupy disk space until you manually remove the archived folder.
 - Uploading from the homepage transfers the file only to the local app. Clicking Generate uploads the reference segment to DreamAPI and may incur charges.
-- Task IDs are persisted. A timed-out query resumes the **same task**, never silently submits another. Ambiguous submissions without an ID stop for manual verification. New attempts preserve prior task information.
+- If a result query times out or reports an SSL error, select **Resume same task** on the affected segment to query its saved task ID. Ambiguous submissions without an ID stop for manual verification. New attempts preserve prior task information.
 - Failed local alignment preserves the previously playable result. Source and model-generated files are kept separately from local audio previews and exports.
 
 ## Practical limits

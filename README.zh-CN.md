@@ -4,9 +4,9 @@
 
 用 **DreamAPI Seedance 2.5** 改编短视频画幅。在本机导入小于五分钟的视频，逐段生成、左右对照，一次确认后导出，并保留原片声音。
 
-https://github.com/user-attachments/assets/d491bf93-465d-4457-af80-4c962772e220
+[![中文工作台](docs/assets/workspace.zh-CN.jpg)](https://cdn.jsdelivr.net/gh/Hy-1990/Short2Wide@v0.1.10/docs/assets/short2wide-zh-CN.mp4)
 
-[下载 20 秒短片 · 30 fps](docs/assets/short2wide-zh-CN.mp4) · [流程与边界](docs/showcase.md)
+[播放 20 秒演示](https://cdn.jsdelivr.net/gh/Hy-1990/Short2Wide@v0.1.10/docs/assets/short2wide-zh-CN.mp4) · [下载 20 秒短片 · 30 fps](docs/assets/short2wide-zh-CN.mp4) · [流程与边界](docs/showcase.md)
 
 > 需要自备 DreamAPI 密钥。应用在本机运行，生成时会把参考片段传至付费云服务。模型可能拒绝素材，也可能产生文字、动作或时序偏差。
 
@@ -17,15 +17,13 @@ https://github.com/user-attachments/assets/d491bf93-465d-4457-af80-4c962772e220
 3. **查看**：左右均可单独播放、暂停、拖动进度；“同步播放”每次都让两边从当前片段起点重播。
 4. **导出**：所有片段生成完成后，点击一次“确认全部并导出”，无需逐段勾选。
 
-![中文工作台](docs/assets/workspace.zh-CN.jpg)
-
 “生成对照音轨”位于生成按钮上方，新片段默认关闭。导出使用原片声音。已生成的片段可展开“手动对齐”调整两个时间点。
 
 ## 首页与项目库
 
 左侧导航区分 **首页** 和 **项目**：首页提供导入入口与最近 6 个项目；项目页展示全部项目，支持名称搜索及已导出/未完成筛选。项目增加时自动换行，导航中持续显示总数；点击卡片继续编辑，也可直接下载已有成片。
 
-**新建改编** 会返回并聚焦导入框，**使用说明** 单独打开帮助页，原来底部仅展示流程的横栏已移除。窄桌面窗口保留侧栏，只有宽度不超过 560px 时改为紧凑的顶部导航；明暗、中英文和 DreamAPI 设置入口保留。
+**新建改编** 会返回并聚焦导入框，**使用说明** 打开操作指南。窄桌面窗口保留侧栏，只有宽度不超过 560px 时改为紧凑的顶部导航；明暗、中英文和 DreamAPI 设置入口保留。
 
 ![本机项目](docs/assets/home.zh-CN.jpg)
 
@@ -109,7 +107,7 @@ Short2Wide
 - 项目位于 `~/.local/share/reframe-studio/projects/`，保留旧版本本机项目兼容性。
 - 删除的项目移至 `~/.local/share/reframe-studio/trash/`，Windows 对应 `%USERPROFILE%\.local\share\reframe-studio\trash\`。这是应用自己的回收目录，不是系统废纸篓/回收站。恢复时先停止应用，把其中的项目文件夹移回 `projects/`，将文件夹名改回原来的 32 位项目 ID（回收文件夹名的前 32 位，`project.json` 中也有），再启动应用；不要覆盖已有项目。目前没有界面恢复按钮。文件仍占磁盘空间，手动清理回收目录后才释放。
 - 首页上传只进入本机。点击生成时才上传参考片段并调用计费模型。
-- 查询超时继续查询原任务；无任务ID的未知提交停止，避免重复扣费。新的明确重试保留旧任务记录。
+- 结果查询超时或提示 SSL 连接中断时，选中出错的片段，点击 **继续查询同一任务**。应用会使用已保存的任务 ID。若没有任务 ID 且提交状态不明，先到 DreamAPI 控制台核实。
 - 对齐失败保留此前可播放的文件，原始素材、模型输出、原音预览和成片分开保存。
 
 ## 使用边界

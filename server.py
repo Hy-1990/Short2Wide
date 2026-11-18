@@ -1,5 +1,6 @@
 """Loopback-only prototype server; credentials live outside the public directory."""
 import argparse
+import errno
 import json
 import os
 import re
@@ -245,8 +246,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=4178)
     args = parser.parse_args()
-    server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
-    print(f'Reframe Studio: http://127.0.0.1:{args.port}', flush=True)
+    try:
+        server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
+    except OSError as error:
+        if error.errno != errno.EADDRINUSE:
+            raise
+        parser.exit(1, f'Port {args.port} is already in use. Stop the previous server, or run: bash start.sh --port {args.port + 1}\n')
+    print(f'\nShort2Wide\n  访问 / Open: http://127.0.0.1:{server.server_port}/\n  按 Ctrl+C 停止 / Press Ctrl+C to stop.\n', flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

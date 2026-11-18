@@ -34,15 +34,14 @@ https://github.com/user-attachments/assets/d491bf93-465d-4457-af80-4c962772e220
 ```sh
 git clone https://github.com/Hy-1990/Short2Wide.git
 cd Short2Wide
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -B server.py --port 4178
+bash start.sh
 ```
 
-Windows 使用 `.venv\Scripts\activate` 激活环境，并用 `python` 代替 `python3`。FFmpeg 需单独安装并加入 PATH；yt-dlp 随 requirements 安装。
+macOS/Linux 下，脚本自动创建 `.venv`、安装 Python 依赖并在前台启动；后续运行复用环境。启动成功后会打印访问地址。保持终端开启，按 `Ctrl+C` 停止。更换端口：`bash start.sh --port 4179`。
 
-打开 **http://127.0.0.1:4178/**，通过右上角 DreamAPI 配置密钥。明暗/跟随系统主题与中英文选项跨页面保留。
+FFmpeg 需单独安装，并确保 `ffmpeg`、`ffprobe` 在 PATH 中。Windows 可通过 WSL 使用脚本；或依次运行 `python -m venv .venv`、`.venv\Scripts\activate`、`python -m pip install -r requirements.txt`、`python -B server.py --port 4178`。
+
+打开 [http://127.0.0.1:4178/](http://127.0.0.1:4178/)，通过右上角 DreamAPI 配置密钥。明暗/跟随系统主题与中英文选项跨页面保留。
 
 项目已内置 `scripts/dreamapi.py`，不需要安装任何 agent skill。启动必须使用 `server.py`。
 

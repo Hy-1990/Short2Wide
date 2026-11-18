@@ -34,13 +34,12 @@ Requires Python **3.10+**, FFmpeg/ffprobe, and Node **22+ only for JavaScript re
 ```sh
 git clone https://github.com/Hy-1990/Short2Wide.git
 cd Short2Wide
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -B server.py --port 4178
+bash start.sh
 ```
 
-On Windows, activate with `.venv\Scripts\activate` and use `python` instead of `python3`. Install FFmpeg separately and ensure `ffmpeg` and `ffprobe` are on PATH. `yt-dlp` is installed by the requirements file.
+On macOS/Linux, the script creates `.venv`, installs the required Python packages and starts the server in the foreground. Later runs reuse the environment. It prints the address after the server starts. Keep the terminal open; press `Ctrl+C` to stop. To use another port: `bash start.sh --port 4179`.
+
+Install FFmpeg separately and ensure `ffmpeg` and `ffprobe` are on PATH. On Windows, use WSL for the Bash script, or run `python -m venv .venv`, `.venv\Scripts\activate`, `python -m pip install -r requirements.txt`, then `python -B server.py --port 4178`.
 
 Open **http://127.0.0.1:4178/**. Configure the key through **DreamAPI** in the top right. Light/dark/system appearance and Chinese/English preferences persist across routes.
 

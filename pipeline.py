@@ -29,7 +29,7 @@ class WorkflowError(Exception):
 
 
 def run(args, timeout=300):
-    result = subprocess.run([str(x) for x in args], capture_output=True, text=True, timeout=timeout)
+    result = subprocess.run([str(x) for x in args], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=timeout)
     if result.returncode:
         raise WorkflowError('媒体处理失败：' + result.stderr[-600:])
     return result.stdout
@@ -55,7 +55,7 @@ def folder(project_id):
 def load(project_id):
     with LOCK:
         try:
-            return json.loads((folder(project_id) / 'project.json').read_text())
+            return json.loads((folder(project_id) / 'project.json').read_text(encoding='utf-8'))
         except FileNotFoundError:
             raise WorkflowError('项目不存在。')
 
@@ -64,7 +64,7 @@ def save(project):
     with LOCK:
         destination = folder(project['id']) / 'project.json'
         temp = destination.with_suffix('.tmp')
-        temp.write_text(json.dumps(project, ensure_ascii=False, indent=2))
+        temp.write_text(json.dumps(project, ensure_ascii=False, indent=2), encoding='utf-8')
         temp.replace(destination)
 
 
@@ -177,10 +177,10 @@ def prepare(project_id):
         # Browser-compatible source, preserving the original file separately for final audio.
         run(['ffmpeg', '-y', '-v', 'error', '-i', path / 'input.media', '-map', '0:v:0', '-map', '0:a:0?', '-vf', "scale=1280:1280:force_original_aspect_ratio=decrease:force_divisible_by=2", '-c:v', 'libx264', '-preset', 'fast', '-crf', '21', '-c:a', 'aac', '-movflags', '+faststart', path / 'source.mp4'])
         mutate(project_id, message='按画面变化和停顿分段…')
-        scene = subprocess.run(['ffmpeg', '-v', 'info', '-i', str(path / 'source.mp4'), '-vf', "scale=320:-2,select='gt(scene,0.32)',showinfo", '-an', '-f', 'null', '-'], capture_output=True, text=True, timeout=180)
+        scene = subprocess.run(['ffmpeg', '-v', 'info', '-i', str(path / 'source.mp4'), '-vf', "scale=320:-2,select='gt(scene,0.32)',showinfo", '-an', '-f', 'null', '-'], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=180)
         candidates = [float(x) for x in re.findall(r'pts_time:([0-9.]+)', scene.stderr)]
         if metadata['audio']:
-            silence = subprocess.run(['ffmpeg', '-v', 'info', '-i', str(path / 'source.mp4'), '-af', 'silencedetect=noise=-32dB:d=0.25', '-vn', '-f', 'null', '-'], capture_output=True, text=True, timeout=90)
+            silence = subprocess.run(['ffmpeg', '-v', 'info', '-i', str(path / 'source.mp4'), '-af', 'silencedetect=noise=-32dB:d=0.25', '-vn', '-f', 'null', '-'], capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=90)
             candidates += [float(x) for x in re.findall(r'silence_end: ([0-9.]+)', silence.stderr)]
         ranges = plan_segments(metadata['duration'], candidates)
         shots = []
@@ -204,8 +204,8 @@ def model_call(project_id, index, resume):
     path = folder(project_id)
     started = False
     try:
-        key = json.loads(CONFIG.read_text())['api_key']
-        env = {**os.environ, 'DREAMAPI_API_KEY': key, 'PYTHONDONTWRITEBYTECODE': '1'}
+        key = json.loads(CONFIG.read_text(encoding='utf-8'))['api_key']
+        env = {**os.environ, 'DREAMAPI_API_KEY': key, 'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONUTF8': '1'}
         if resume:
             args = [sys.executable, str(SCRIPT), 'seedance-2.5', 'query', '--task-id', shot['task_id'], '--timeout', '900', '--json']
         else:
@@ -214,7 +214,7 @@ def model_call(project_id, index, resume):
             if shot.get('generate_audio', True):
                 args.append('--generate-audio')
         args = [args[0], str(Path(__file__).with_name('dream_worker.py')), *args[1:]]
-        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8', errors='replace', env=env)
         started = True
         output = []
         reader = threading.Thread(target=lambda: output.append(process.stdout.read()), daemon=True)
@@ -395,7 +395,7 @@ def project_summaries():
     unreadable = 0
     for record in DATA.glob('*/project.json'):
         try:
-            project = json.loads(record.read_text())
+            project = json.loads(record.read_text(encoding='utf-8'))
             shots = project.get('shots', [])
             projects.append({
                 **{k: project[k] for k in ('id', 'name', 'status', 'created')},
@@ -419,7 +419,7 @@ def export(project_id):
         raise WorkflowError('请先生成并确认所有片段。')
     mutate(project_id, message='合成画面并保留完整原音轨…', error='')
     manifest = path / 'concat.txt'
-    manifest.write_text(''.join(f"file 'shot-{s['index']}-aligned.mp4'\n" for s in project['shots']))
+    manifest.write_text(''.join(f"file 'shot-{s['index']}-aligned.mp4'\n" for s in project['shots']), encoding='utf-8')
     # Encode once across segment boundaries for a continuous timeline; audio always comes from the input.
     args = ['ffmpeg', '-y', '-v', 'error', '-f', 'concat', '-safe', '1', '-i', manifest, '-i', path / 'input.media', '-map', '0:v:0', '-map', '1:a:0?', '-c:v', 'libx264', '-preset', 'fast', '-crf', '19', '-c:a', 'aac', '-b:a', '192k', '-t', project['duration'], '-movflags', '+faststart', path / 'export-new.mp4']
     try:

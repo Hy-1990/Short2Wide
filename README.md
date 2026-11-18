@@ -29,33 +29,57 @@ The homepage displays existing projects with recognizable thumbnails, generation
 
 ## Install and run
 
-**1. Prerequisites:** Python 3.10+ and FFmpeg. On macOS with Homebrew, install missing prerequisites with `brew install python ffmpeg`. Both `ffmpeg` and `ffprobe` must be on PATH. See the [FFmpeg formula](https://formulae.brew.sh/formula/ffmpeg).
+Use your existing **Python 3.10+** and pip. The only direct Python packages are `requests` and `yt-dlp`. No environment creation or activation is required.
 
-**2. Download and install Python packages:**
+### Windows 10/11
+
+1. Install [Python](https://www.python.org/downloads/windows/) and [FFmpeg](https://www.gyan.dev/ffmpeg/builds/). With WinGet, you can use:
+
+   ```powershell
+   winget install --id Python.Python.3.12 -e
+   winget install --id Gyan.FFmpeg -e
+   ```
+
+   Reopen PowerShell after installing. Check `python --version`, `ffmpeg -version` and `ffprobe -version`. If Python is available only as `py`, use `py -3` instead of `python` below.
+
+2. Download this repository through **Code → Download ZIP** and extract it, or clone it with Git. Open PowerShell in the extracted project folder and install the packages once:
+
+   ```powershell
+   python -m pip install -r requirements.txt
+   ```
+
+3. Start from PowerShell:
+
+   ```powershell
+   .\start.bat
+   ```
+
+   Or double-click `start.bat` in File Explorer. In Command Prompt, run `start.bat`. The launcher checks dependencies, supports paths with spaces and Chinese characters, and prints the access URL. An error remains visible for double-click launches. No WSL, Bash or PowerShell execution-policy change is needed.
+
+If you installed FFmpeg manually, add its **bin** folder (containing `ffmpeg.exe` and `ffprobe.exe`) to your user PATH and reopen the terminal. Optional port: `.\start.bat --port 4179`.
+
+### macOS / Linux
+
+Install Python 3.10+ and FFmpeg first. On macOS with Homebrew: `brew install python ffmpeg`. On Linux, install Python, pip and FFmpeg using your distribution's package manager.
 
 ```sh
 git clone https://github.com/Hy-1990/Short2Wide.git
 cd Short2Wide
 python3 -m pip install -r requirements.txt
+bash start.sh
 ```
 
-The two direct Python dependencies are `requests` and `yt-dlp`. Use your existing Python; there is no environment creation or activation step.
-
-If Homebrew Python reports `externally-managed-environment`, install into your user directory instead:
+If pip reports `externally-managed-environment`, use a user-directory installation:
 
 ```sh
 python3 -m pip install --user --break-system-packages -r requirements.txt
 ```
 
-This uses pip's [user-install and externally-managed options](https://pip.pypa.io/en/stable/cli/pip_install/); it does not change pip configuration or install into Homebrew's package directory.
+These [pip options](https://pip.pypa.io/en/stable/cli/pip_install/) do not change pip configuration. For another port: `bash start.sh --port 4179`.
 
-**3. Start:**
+### Open and use
 
-```sh
-bash start.sh
-```
-
-Startup prints:
+Both launchers print the actual address after startup:
 
 ```text
 Short2Wide
@@ -63,16 +87,17 @@ Short2Wide
   按 Ctrl+C 停止 / Press Ctrl+C to stop.
 ```
 
-Open [http://127.0.0.1:4178/](http://127.0.0.1:4178/), configure your key through **DreamAPI** in the top right, then import a link or file. Generate the segments, review the results, and click **Confirm all & export**.
+Open [http://127.0.0.1:4178/](http://127.0.0.1:4178/), configure your key through **DreamAPI** in the top right, then import a link or file. Generate and review the segments, then click **Confirm all & export**.
 
-Next time, run `bash start.sh` from the project folder. Keep the terminal open; press `Ctrl+C` to stop. If the port is occupied, stop the earlier process or run `bash start.sh --port 4179` and use the printed address.
+Keep the terminal open. Press `Ctrl+C` to stop; if Command Prompt asks whether to terminate the batch job, enter `Y`. Next time, just run the launcher for your platform. If the port is occupied, stop the earlier server or choose another port.
 
-On Windows, use `python -m pip install -r requirements.txt` and `python -B server.py` after installing Python and FFmpeg. The bundled DreamAPI adapter needs no agent skill or AI coding environment. Node is only needed for development tests.
+The DreamAPI adapter is bundled; no agent skill, AI coding environment or Node installation is needed for normal use.
 
 ## Data and recovery
 
 - The service listens on **127.0.0.1 only**, validates Host/Origin, and serves an explicit public-file allowlist.
-- Keys are stored outside the repository at `~/.config/reframe-studio/dreamapi.json`, with 0600 permissions. The app never persists them in browser storage or returns a saved key through its API.
+- Keys are stored outside the repository at `~/.config/reframe-studio/dreamapi.json`, with 0600 permissions on macOS/Linux; Windows uses the permissions inherited from your user-profile directory. The app never persists them in browser storage or returns a saved key through its API.
+- On Windows, `~` means your user-profile folder: credentials are at `%USERPROFILE%\.config\reframe-studio\dreamapi.json`; projects are at `%USERPROFILE%\.local\share\reframe-studio\projects\`.
 - Projects remain at `~/.local/share/reframe-studio/projects/` to preserve compatibility with the original local prototype.
 - Uploading from the homepage transfers the file only to the local app. Clicking Generate uploads the reference segment to DreamAPI and may incur charges.
 - Task IDs are persisted. A timed-out query resumes the **same task**, never silently submits another. Ambiguous submissions without an ID stop for manual verification. New attempts preserve prior task information.

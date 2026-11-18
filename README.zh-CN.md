@@ -29,33 +29,57 @@ https://github.com/user-attachments/assets/d491bf93-465d-4457-af80-4c962772e220
 
 ## 安装运行
 
-**1. 准备环境：** Python 3.10+ 和 FFmpeg。macOS 已安装 Homebrew 时，可用 `brew install python ffmpeg` 安装缺少的程序。终端需能运行 `python3`、`ffmpeg`、`ffprobe`。参见 [FFmpeg 安装说明](https://formulae.brew.sh/formula/ffmpeg)。
+直接使用已有的 **Python 3.10+** 和 pip，Python 直接依赖只有 `requests`、`yt-dlp`，不需要创建或激活环境。
 
-**2. 下载项目、安装 Python 依赖：**
+### Windows 10/11
+
+1. 安装 [Python](https://www.python.org/downloads/windows/) 和 [FFmpeg](https://www.gyan.dev/ffmpeg/builds/)。已安装 WinGet 时，可以执行：
+
+   ```powershell
+   winget install --id Python.Python.3.12 -e
+   winget install --id Gyan.FFmpeg -e
+   ```
+
+   安装后重新打开 PowerShell，确认 `python --version`、`ffmpeg -version`、`ffprobe -version` 能运行。如果 Python 只有 `py` 命令，把下面的 `python` 换成 `py -3`。
+
+2. 在 GitHub 点击 **Code → Download ZIP** 下载并解压，或使用 Git 克隆。在解压后的项目文件夹打开 PowerShell，安装一次依赖：
+
+   ```powershell
+   python -m pip install -r requirements.txt
+   ```
+
+3. 在 PowerShell 中启动：
+
+   ```powershell
+   .\start.bat
+   ```
+
+   也可以在文件资源管理器中双击 `start.bat`；命令提示符中使用 `start.bat`。脚本检查依赖后启动，支持中文和空格路径，并打印访问地址。双击启动遇到错误会保留提示。不需要 WSL、Bash，也不需要更改 PowerShell 执行策略。
+
+手动安装 FFmpeg 时，把包含 `ffmpeg.exe`、`ffprobe.exe` 的 **bin** 文件夹加入用户 PATH，然后重新打开终端。更换端口：`.\start.bat --port 4179`。
+
+### macOS / Linux
+
+先安装 Python 3.10+ 和 FFmpeg。macOS 使用 Homebrew 时可执行 `brew install python ffmpeg`；Linux 使用发行版的包管理器安装 Python、pip 和 FFmpeg。
 
 ```sh
 git clone https://github.com/Hy-1990/Short2Wide.git
 cd Short2Wide
 python3 -m pip install -r requirements.txt
+bash start.sh
 ```
 
-Python 直接依赖只有 `requests` 和 `yt-dlp`。直接使用已有 Python，不需要创建或激活任何环境。
-
-如果 Homebrew Python 提示 `externally-managed-environment`，改用用户目录安装：
+如果 pip 提示 `externally-managed-environment`，使用用户目录安装：
 
 ```sh
 python3 -m pip install --user --break-system-packages -r requirements.txt
 ```
 
-这是 pip 提供的[用户目录安装及管理环境选项](https://pip.pypa.io/en/stable/cli/pip_install/)，不修改 pip 全局配置，也不把依赖写进 Homebrew 的包目录。
+这些 [pip 选项](https://pip.pypa.io/en/stable/cli/pip_install/)不修改 pip 全局配置。更换端口：`bash start.sh --port 4179`。
 
-**3. 启动：**
+### 打开并使用
 
-```sh
-bash start.sh
-```
-
-启动成功后，终端会显示：
+两个平台的启动脚本都会在成功启动后显示实际地址：
 
 ```text
 Short2Wide
@@ -65,14 +89,15 @@ Short2Wide
 
 浏览器打开 [http://127.0.0.1:4178/](http://127.0.0.1:4178/)，点击右上角 **DreamAPI** 配置密钥，然后粘贴视频链接或上传文件。逐段生成并检查结果，最后点击一次“确认全部并导出”。
 
-以后进入项目目录，执行 `bash start.sh` 即可。保持终端开启，按 `Ctrl+C` 停止。如果端口被占用，先停止之前的进程，或使用 `bash start.sh --port 4179`，打开终端打印的地址。
+使用时保持终端开启；按 `Ctrl+C` 停止。如果 Windows 命令提示符询问是否终止批处理，输入 `Y`。下次只需运行对应平台的启动脚本。端口被占用时，停止旧服务或换一个端口。
 
-Windows 安装 Python 和 FFmpeg 后，运行 `python -m pip install -r requirements.txt`，再运行 `python -B server.py`。项目已内置 DreamAPI 适配器，不需要安装 agent skill 或 AI 编程工具；正常使用也不需要 Node。
+项目已内置 DreamAPI 适配器，正常使用不需要 agent skill、AI 编程工具或 Node。
 
 ## 数据与恢复
 
 - 服务仅监听 127.0.0.1，保留 Host/Origin 检查与静态文件白名单。
-- 密钥保存在仓库之外的 `~/.config/reframe-studio/dreamapi.json`，权限为0600；不存浏览器、不回传已保存密钥。
+- 密钥保存在仓库之外的 `~/.config/reframe-studio/dreamapi.json`，macOS/Linux 权限为0600，Windows 继承用户目录权限；不存浏览器、不回传已保存密钥。
+- Windows 下，密钥路径为 `%USERPROFILE%\.config\reframe-studio\dreamapi.json`，项目路径为 `%USERPROFILE%\.local\share\reframe-studio\projects\`。
 - 项目位于 `~/.local/share/reframe-studio/projects/`，保留旧版本本机项目兼容性。
 - 首页上传只进入本机。点击生成时才上传参考片段并调用计费模型。
 - 查询超时继续查询原任务；无任务ID的未知提交停止，避免重复扣费。新的明确重试保留旧任务记录。

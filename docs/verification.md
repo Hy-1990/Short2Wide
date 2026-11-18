@@ -2,7 +2,7 @@
 
 ## Automated checks
 
-Passed: 4 Node playback tests and 14 Python pipeline, server and provider tests. Tests use temporary fixtures and do not generate paid requests.
+Suite: 4 Node playback tests and 15 Python tests, including a native Windows launcher smoke test (skipped on other platforms). Tests use temporary fixtures and do not generate paid requests.
 
 - Independent left/right playback and seeking; solo actions release sync without controlling the other player.
 - Every explicit sync start restarts the selected source segment and generated result together.
@@ -36,3 +36,9 @@ The actual model result reconstructs the scene and changes camera movement and e
 The Bash launcher was verified with the existing system Python, without creating an environment or installing packages during launch. Startup from outside the project directory returned HTTP 200 at the printed URL; Ctrl+C shutdown and occupied-port handling were checked. On the tested Homebrew Python, pip required explicit user-directory installation with `--user --break-system-packages`, as documented in both READMEs. The downloader runs through the same Python interpreter, so a user-site CLI directory does not need to be added to PATH.
 
 Tests are grouped under `tests/`. Production-only movie rendering scripts/fonts and local agent instructions are excluded from the public distribution; the actual application assets, finished films, source/result examples and license notices remain.
+
+## Windows compatibility
+
+CI now runs on both Ubuntu and Windows. The Windows-only smoke test launches `start.bat` from another directory, using an application path containing spaces and Chinese characters, checks the printed URL with a real HTTP request, and cleans up the process tree. The real FFmpeg pipeline test also uses a Unicode/space-containing temporary path and project name. Windows does not use POSIX chmod semantics; the credential test still verifies secret redaction and API boundaries on both platforms.
+
+Project JSON, FFmpeg manifests and provider subprocess streams explicitly use UTF-8. The batch launcher prefers a usable `python` command, falls back to `py -3`, checks FFmpeg and Python packages, and keeps double-click startup errors visible. Existing project/key paths are preserved under the user-profile directory.

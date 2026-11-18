@@ -1,6 +1,7 @@
 import functools
 import http.client
 import json
+import os
 import tempfile
 import threading
 import unittest
@@ -41,7 +42,8 @@ class SettingsTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertNotIn(key, response)
         self.assertEqual(json.loads(self.config.read_text())['api_key'], key)
-        self.assertEqual(self.config.stat().st_mode & 0o777, 0o600)
+        if os.name != 'nt':
+            self.assertEqual(self.config.stat().st_mode & 0o777, 0o600)
         status, response = self.request('GET')
         self.assertEqual(json.loads(response), {'configured': True, 'verified': False})
         self.assertNotIn(key, response)

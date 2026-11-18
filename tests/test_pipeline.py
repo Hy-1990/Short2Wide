@@ -27,8 +27,8 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(pipeline.valid_link('https://www.youtube.com/watch?v=x'))
 
     def test_real_media_prepare_align_and_export_uses_original_audio(self):
-        with tempfile.TemporaryDirectory() as directory, patch.object(pipeline, 'DATA', Path(directory)):
-            project=pipeline.create('synthetic.mp4', '16:9'); pid=project['id']; root=pipeline.folder(pid)
+        with tempfile.TemporaryDirectory(prefix='short2wide 中文 ') as directory, patch.object(pipeline, 'DATA', Path(directory)):
+            project=pipeline.create('synthetic 中文.mp4', '16:9'); pid=project['id']; root=pipeline.folder(pid)
             pipeline.run(['ffmpeg','-y','-v','error','-f','lavfi','-i','testsrc2=size=360x640:rate=30','-f','lavfi','-i','sine=frequency=440:sample_rate=48000','-t','4.8','-c:v','libx264','-preset','ultrafast','-c:a','aac','-f','mp4',root/'input.media'])
             pipeline.prepare(pid)
             project=pipeline.load(pid)

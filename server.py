@@ -251,7 +251,8 @@ if __name__ == '__main__':
     except OSError as error:
         if error.errno != errno.EADDRINUSE:
             raise
-        parser.exit(1, f'Port {args.port} is already in use. Stop the previous server, or run: bash start.sh --port {args.port + 1}\n')
+        launcher = 'start.bat' if os.name == 'nt' else 'bash start.sh'
+        parser.exit(1, f'Port {args.port} is already in use. Stop the previous server, or run: {launcher} --port {args.port + 1}\n')
     print(f'\nShort2Wide\n  访问 / Open: http://127.0.0.1:{server.server_port}/\n  按 Ctrl+C 停止 / Press Ctrl+C to stop.\n', flush=True)
     try:
         server.serve_forever()

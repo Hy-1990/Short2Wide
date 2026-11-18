@@ -77,6 +77,8 @@ python3 -m pip install --user --break-system-packages -r requirements.txt
 
 这些 [pip 选项](https://pip.pypa.io/en/stable/cli/pip_install/)不修改 pip 全局配置。更换端口：`bash start.sh --port 4179`。
 
+如果终端激活了 conda，脚本会先检查当前 Python；依赖不齐时也会检查已有的 Homebrew Python，使用满足要求的解释器，并显示 `Using Python: ...`。不会切换或修改你的 conda 环境，也不会自动安装依赖。
+
 ### 打开并使用
 
 两个平台的启动脚本都会在成功启动后显示实际地址：

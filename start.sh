@@ -3,18 +3,28 @@ set -euo pipefail
 
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
 
-for dependency in python3 ffmpeg ffprobe; do
+for dependency in ffmpeg ffprobe; do
     if ! command -v "$dependency" >/dev/null 2>&1; then
         echo "Missing dependency: $dependency. Install it first; see README.md." >&2
         exit 1
     fi
 done
 
-python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else "Python 3.10+ is required.")'
+short2wide_python=''
+# An active conda environment may shadow a Homebrew Python with ready packages.
+for candidate in python3 python /opt/homebrew/bin/python3 /usr/local/bin/python3; do
+    if command -v "$candidate" >/dev/null 2>&1 &&
+        "$candidate" -c 'import sys, requests, yt_dlp; sys.exit(sys.version_info < (3, 10))' 2>/dev/null; then
+        short2wide_python=$(command -v "$candidate")
+        break
+    fi
+done
 
-if ! python3 -c 'import requests, yt_dlp' 2>/dev/null; then
-    echo "Install dependencies first: python3 -m pip install -r requirements.txt" >&2
+if [[ -z "$short2wide_python" ]]; then
+    echo "No Python 3.10+ with requests and yt-dlp was found." >&2
+    echo "Install dependencies in the Python you use: python3 -m pip install -r requirements.txt" >&2
     exit 1
 fi
 
-exec python3 -B server.py "$@"
+"$short2wide_python" -c 'import sys; print("Using Python: " + sys.executable, flush=True)'
+exec "$short2wide_python" -B server.py "$@"

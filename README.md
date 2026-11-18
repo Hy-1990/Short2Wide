@@ -77,6 +77,8 @@ python3 -m pip install --user --break-system-packages -r requirements.txt
 
 These [pip options](https://pip.pypa.io/en/stable/cli/pip_install/) do not change pip configuration. For another port: `bash start.sh --port 4179`.
 
+With conda active, the script checks the current Python first, then existing Homebrew Python locations if dependencies are missing. It selects an interpreter with the required packages and prints `Using Python: ...`. It does not modify or switch your conda environment or automatically install packages.
+
 ### Open and use
 
 Both launchers print the actual address after startup:

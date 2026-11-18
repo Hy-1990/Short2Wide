@@ -1,26 +1,56 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6f5f1"><meta name="description" content="把已有视频改成新的画幅，保留原音，逐段核对"><title>画幅工作台</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><script src="preferences.js"></script><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="settings.css"><link rel="stylesheet" href="home.css"><script src="i18n.js" defer></script><script src="ui-feedback.js" defer></script><script src="settings.js" defer></script><script src="home.js" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6f5f1"><meta name="description" content="把已有视频改成新的画幅，保留原音，逐段核对"><title>画幅工作台</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><script src="preferences.js"></script><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="settings.css"><link rel="stylesheet" href="home.css?v=0.1.7"><script src="i18n.js" defer></script><script src="ui-feedback.js" defer></script><script src="settings.js" defer></script><script src="home.js?v=0.1.7" defer></script></head>
 <body class="home-page">
 <a class="skip-link" href="#home-main">跳到主要内容</a>
 <svg class="svg-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
 <symbol id="i-frame" viewBox="0 0 24 24"><path d="M8 3H4v5m12-5h4v5M4 16v5h4m12-5v5h-4M8 8h8v8H8z"/></symbol>
 <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
 <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3zM9 20v-7h6v7"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2.5 2-2.5 3.5M12 17h.01"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
 <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4m-4 4 4-4 4 4M4 15v5h16v-5"/></symbol>
 <symbol id="i-link" viewBox="0 0 24 24"><path d="m10 14 4-4m-6 6-1 1a4.24 4.24 0 0 1-6-6l4-4a4.24 4.24 0 0 1 6 0m2 10a4.24 4.24 0 0 0 6 0l4-4a4.24 4.24 0 0 0-6-6l-1 1" transform="translate(1 0) scale(.9)"/></symbol>
-<symbol id="i-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7z"/></symbol>
-<symbol id="i-down" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
 </defs></svg>
-<header class="home-header"><a class="home-wordmark" href="./"><svg><use href="#i-frame"/></svg><span>画幅工作台</span></a><div class="home-header-right"><a class="home-new-link" href="#import-video">新建改编<svg><use href="#i-plus"/></svg></a><div data-app-controls></div></div></header>
-<main id="home-main" class="home-content">
-<section class="home-projects" aria-labelledby="projects-title"><div class="projects-heading"><div><h2 id="projects-title">本机项目</h2><span id="projects-count"></span></div><button type="button" id="refresh-projects" class="text-button">刷新</button></div><div id="projects-grid" class="projects-grid" aria-live="polite"><p class="projects-placeholder">读取本机项目…</p></div></section>
-<section class="home-hero" aria-labelledby="home-title"><h2 class="returning-title">开始新的改编</h2>
-<h1 id="home-title"><span>你的内容，</span><span>不止一种画幅。</span></h1>
-<p class="hero-description">横屏与竖屏之间，保留你的声音。</p>
+<aside class="home-sidebar">
+  <a class="home-wordmark" href="#home" aria-label="Short2Wide 首页"><svg><use href="#i-frame"/></svg><span data-no-translate>Short2Wide</span></a>
+  <a class="sidebar-create button button-primary" href="#new"><svg><use href="#i-plus"/></svg><span>新建改编</span></a>
+  <nav class="sidebar-navigation" aria-label="主导航">
+    <a href="#home" data-navigation="home" aria-current="page"><svg><use href="#i-home"/></svg><span>首页</span></a>
+    <a href="#projects" data-navigation="projects"><svg><use href="#i-grid"/></svg><span>项目</span><span id="navigation-project-count" class="navigation-count" data-no-translate></span></a>
+  </nav>
+  <div class="sidebar-bottom"><a href="#help" data-navigation="help"><svg><use href="#i-help"/></svg><span>使用说明</span></a></div>
+</aside>
+<div class="home-shell">
+  <header class="home-header"><h1 id="page-title">首页</h1><div data-app-controls></div></header>
+  <main id="home-main" class="home-content">
+    <section id="new-project" class="new-project" aria-labelledby="import-title">
+      <h2 id="import-title">开始新的改编</h2>
+      <p class="import-description">转换画幅，保留原声。</p>
 <form id="import-video" class="import-form" novalidate><label class="sr-only" for="home-source">视频链接</label><div class="import-input-wrap"><svg><use href="#i-link"/></svg><input id="home-source" type="url" placeholder="粘贴 YouTube / TikTok 链接" autocomplete="off" aria-describedby="import-help import-error"><button type="submit" class="button button-primary"><span>开始改编</span><svg><use href="#i-arrow"/></svg></button></div><div class="home-import-options"><div class="home-ratios" role="group" aria-label="目标画幅"><button type="button" class="active" data-home-ratio="16:9" aria-pressed="true"><span class="format-icon horizontal"></span><span>横屏</span><small>16:9</small></button><button type="button" data-home-ratio="9:16" aria-pressed="false"><span class="format-icon vertical"></span><span>竖屏</span><small>9:16</small></button></div><button type="button" id="home-upload" class="local-upload"><svg><use href="#i-upload"/></svg><span id="home-file-name">上传视频</span></button><input id="home-file" type="file" accept="video/*" hidden></div><p id="import-error" class="home-error" role="alert" hidden></p><p class="import-help" id="import-help">支持小于5分钟的视频</p></form>
-</section>
-<section class="hero-visual creator-showcase" aria-label="创作者原片预览，非模型改编结果"><div class="creator-video"><video src="assets/showcase-source.mp4" poster="assets/showcase-source.jpg" muted autoplay loop playsinline controls aria-label="云海栈桥原片"></video></div><div class="visual-caption"><span>创作者原片</span><span>9:16 · 00:15</span></div><div class="creator-formats"><span>9:16<svg><use href="#i-arrow"/></svg>16:9</span><span>换个画幅，保留原音</span></div></section>
-<section class="home-guide"><ol class="workflow-steps"><li><span>01</span><strong>导入视频</strong></li><li><span>02</span><strong>分段改编</strong></li><li><span>03</span><strong>核对并导出</strong></li></ol><details><summary><span>如何使用</span><svg><use href="#i-down"/></svg></summary><p>粘贴链接或上传小于5分钟的视频，选择目标画幅。按画面变化与停顿分段，逐段生成并核对，最后合成导出。</p><p>回填原音不会自动保证同步，口型与动效仍需检查。</p></details></section>
-
-</main></body></html>
+    </section>
+    <section id="project-library" class="project-library" aria-labelledby="projects-title">
+      <div class="projects-heading"><div><h2 id="projects-title">最近项目</h2><span id="projects-count" data-no-translate></span></div><div class="projects-actions"><button type="button" id="refresh-projects" class="text-button" hidden>刷新</button><a href="#projects" id="all-projects-link">查看全部<svg><use href="#i-arrow"/></svg></a></div></div>
+      <div class="project-filters" id="project-filters" hidden>
+        <label class="project-search"><svg><use href="#i-search"/></svg><input id="project-search" type="search" placeholder="搜索项目名称" aria-label="搜索项目名称" autocomplete="off"></label>
+        <label class="project-status-filter"><span class="sr-only">项目状态</span><select id="project-filter" aria-label="项目状态"><option value="all">全部状态</option><option value="exported">已导出</option><option value="unfinished">未完成</option></select><svg><use href="#i-down"/></svg></label>
+      </div>
+      <div id="projects-grid" class="projects-grid" aria-live="polite"><p class="projects-placeholder">读取本机项目…</p></div>
+    </section>
+    <section id="usage-guide" class="usage-guide" aria-labelledby="guide-title" hidden>
+      <h2 id="guide-title">从导入到导出</h2>
+      <p class="guide-intro">视频保存在本机，生成通过 DreamAPI 完成。</p>
+      <ol>
+        <li><h3>导入视频</h3><p>粘贴 YouTube / TikTok 链接，或上传小于5分钟的本地视频，选择目标画幅。</p></li>
+        <li><h3>逐段生成与检查</h3><p>在右上角配置 DreamAPI 密钥后，生成选中的片段。左右视频可独立播放，“同步播放”会让当前片段从头开始。</p></li>
+        <li><h3>确认并导出</h3><p>全部片段生成后，点击一次“确认全部并导出”。成片使用原始音轨。</p></li>
+      </ol>
+      <p class="guide-note">生成会产生模型费用。画面重建可能改变文字、动作和时序，原音保留不代表同步已保证，请逐段检查。</p>
+      <a class="guide-start" href="#new">开始新的改编<svg><use href="#i-arrow"/></svg></a>
+    </section>
+  </main>
+</div>
+</body></html>

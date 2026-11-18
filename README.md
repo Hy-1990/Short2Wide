@@ -21,9 +21,11 @@ https://github.com/user-attachments/assets/b2b6c053-876b-4c61-84b5-139c0d3430ad
 
 Optional two-cue timing correction and model-audio generation are folded into **Advanced options**. Disabling model audio still preserves the source soundtrack in the local preview and final export.
 
-## Local projects come first
+## Home and project library
 
-The homepage displays existing projects with recognizable thumbnails, generation progress and export status. Open a card to continue, or download an existing export directly. Returning to the homepage refreshes the list.
+The left sidebar separates **Home** from **Projects**. Home offers video import and the six most recent projects. Projects shows the complete library with name search and exported/unfinished filters. Cards wrap into additional rows as the library grows; the project count stays visible in navigation. Open a card to continue, or download a completed export directly.
+
+**New reframe** returns to and focuses the import field. **How to use** opens a separate guide; the old decorative workflow footer is removed. On phones, navigation moves to a compact top area. Theme, language and DreamAPI controls remain available.
 
 ![Local project library](docs/assets/home.en.jpg)
 

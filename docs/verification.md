@@ -42,3 +42,9 @@ Tests are grouped under `tests/`. Production-only movie rendering scripts/fonts 
 CI now runs on both Ubuntu and Windows. The Windows-only smoke test launches `start.bat` from another directory, using an application path containing spaces and Chinese characters, checks the printed URL with a real HTTP request, and cleans up the process tree. The real FFmpeg pipeline test also uses a Unicode/space-containing temporary path and project name. Windows does not use POSIX chmod semantics; the credential test still verifies secret redaction and API boundaries on both platforms.
 
 Project JSON, FFmpeg manifests and provider subprocess streams explicitly use UTF-8. The batch launcher prefers a usable `python` command, falls back to `py -3`, checks FFmpeg and Python packages, and keeps double-click startup errors visible. Existing project/key paths are preserved under the user-profile directory.
+
+## Home navigation and larger libraries
+
+Browser verification used actual local projects plus an isolated, mutation-disabled layout fixture service. With twelve fixture entries, Projects rendered twelve cards across responsive rows; name search selected one match, the exported filter selected four, and Home retained six recent cards while navigation showed the full count. Search no-match/clear, empty library, failed-load/refresh recovery, the help route, import validation, and New reframe input focus were exercised in Chinese/English and light/dark. Layout widths 1280, 768 and 390 had no horizontal overflow. Fixture entries were never written into the user's project directory. Public README captures contain only the creator-owned actual completed cloud-walk project.
+
+This UI update changes no generation, playback, cue alignment or export semantics. Original local project file hashes were verified separately; obsolete homepage-only media and type assets were moved out of the distribution.

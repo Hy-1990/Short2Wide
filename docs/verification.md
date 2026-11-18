@@ -2,7 +2,7 @@
 
 ## Automated checks
 
-Suite: 4 Node playback tests and 18 Python tests, including a native Windows launcher smoke test (skipped on other platforms). Tests use temporary fixtures and do not generate paid requests.
+Suite: 5 Node playback tests and 18 Python tests, including a native Windows launcher smoke test (skipped on other platforms). Tests use temporary fixtures and do not generate paid requests.
 
 - Independent left/right playback and seeking; solo actions release sync without controlling the other player.
 - Every explicit sync start restarts the selected source segment and generated result together.
@@ -57,3 +57,5 @@ The sidebar remains visible at 699px and 561px; top navigation starts at 560px. 
 Deletion was exercised against a separate temporary project directory and the real DELETE handler: Cancel left four entries, confirmation removed only the selected test project and reduced the count to three, and its media remained in the temporary recovery folder. Busy deletion was disabled. A simulated file-access failure kept the project and dialog open with English inline/toast feedback; keyboard focus returned to Cancel. Escape closed the dialog without deleting. Confirmation was inspected at 390, 699 and 1280px, including Chinese/English and light/dark. No real user project was deleted and no paid generation was submitted.
 
 The main app’s existing process was left running; the new backend endpoint becomes available after restarting with the normal launcher. The interface reports this explicitly when an older server does not recognize deletion. Both README home captures now show the current card controls and the creator-owned actual Cloudwalk record only. Editor captures remain current because this release does not change the editor.
+
+The editor now exposes optional comparison audio before generation. Playback tests cover the default for new segments and the saved setting for resumable tasks. At a 1920 × 993 desktop viewport the expanded manual alignment controls fit on screen. The bilingual workspace captures show the updated editor.

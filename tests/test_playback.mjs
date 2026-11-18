@@ -53,3 +53,11 @@ test('silent native results retain the original soundtrack during explicit sync'
  const {get,source,result}=await setup({generated_audio:false});get('#audio-mode').value='native';get('#audio-mode').onchange();await Promise.resolve();
  await get('#sync-play').onclick();assert.equal(source.muted,false);assert.equal(result.muted,true);assert.equal(result.playbackRate,1.2);
 });
+
+test('comparison audio is opt-in and existing tasks keep their saved selection',async()=>{
+ const fresh=await setup({status:'ready',task_id:'',generate_audio:undefined});
+ assert.equal(fresh.get('#model-audio').checked,false);
+ const resume=await setup({status:'resumable',generate_audio:true});
+ assert.equal(resume.get('#model-audio').checked,true);
+ assert.equal(resume.get('#model-audio').disabled,true);
+});

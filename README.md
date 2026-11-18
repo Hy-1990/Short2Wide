@@ -19,7 +19,7 @@ https://github.com/user-attachments/assets/b2b6c053-876b-4c61-84b5-139c0d3430ad
 
 ![Short2Wide workspace](docs/assets/workspace.en.jpg)
 
-Optional two-cue timing correction and model-audio generation are folded into **Advanced options**. Disabling model audio still preserves the source soundtrack in the local preview and final export.
+**Generate comparison audio** sits above the generation button and starts off for new segments. Exports use the original soundtrack. Open **Manual alignment** on a generated segment for two-cue timing correction.
 
 ## Home and project library
 
@@ -119,7 +119,7 @@ The DreamAPI adapter is bundled; no agent skill, AI coding environment or Node i
 - Default alignment scales overall duration. Two-cue correction adjusts one linear offset/speed relationship; it cannot guarantee every intermediate event matches.
 - Export always takes audio from the original file and encodes it as AAC for MP4 compatibility. Silent inputs remain silent.
 - YouTube/TikTok availability, authentication, regional restrictions and extractor changes can affect downloading. Local files remain an alternative.
-- Output-audio rejection is distinct from rejection of the uploaded video. You can turn model-audio generation off under Advanced options before an explicitly chosen retry.
+- Output-audio rejection is distinct from rejection of the uploaded video. You can turn model-audio generation off above the generation button before an explicitly chosen retry.
 
 ## Verification
 

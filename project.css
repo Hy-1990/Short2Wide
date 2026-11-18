@@ -9,3 +9,20 @@
 @media(prefers-reduced-motion:reduce){.working-frame i,.working-dot,.button.is-working:before{animation:none}.frame-wide{opacity:.6}.frame-tall{opacity:1}}
 #loading-clock{display:block;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}.project-loading.is-failed .working-frame{display:none}
 .model-audio-option{display:flex;align-items:flex-start;gap:8px;font-size:12px;line-height:1.8;cursor:pointer}.model-audio-option input{accent-color:var(--green);margin:4px 0 0;flex-shrink:0}#cue-options{margin-top:20px}
+
+/* Give the preview and segment strip a shared height budget on desktop. */
+@media (min-width:1101px) {
+  .project-header {height:60px}
+  .real-workspace {grid-template-columns:minmax(0,1fr) clamp(300px,21vw,348px);gap:28px}
+  .real-preview video,.output-stage {height:clamp(190px,calc(100dvh - 445px),400px);min-height:190px}
+  .real-timeline {padding-top:14px}
+  .real-note {margin:10px 0 14px}
+}
+.real-inspector textarea {min-height:72px;padding:8px 12px}
+.real-inspector .field-note {margin:6px 0 10px;line-height:1.55}
+.model-audio-option {margin-top:12px;color:var(--text);font-weight:500}
+.model-audio-option + .field-note {padding-left:21px}
+.advanced-options {margin-top:12px;padding-top:0}
+.advanced-content,#cue-options {padding-top:0;margin-top:0}
+.project-status:empty {display:none}
+.real-error pre {white-space:pre-wrap;overflow-wrap:anywhere;max-height:6em;overflow:auto}

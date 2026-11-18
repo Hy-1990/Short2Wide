@@ -4,9 +4,9 @@
 
 用 **DreamAPI Seedance 2.5** 改编短视频画幅。在本机导入小于五分钟的视频，逐段生成、左右对照，一次确认后导出，并保留原片声音。
 
-[![Short2Wide 产品短片](docs/assets/preview.zh-CN.gif)](docs/assets/short2wide-zh-CN.mp4)
+https://github.com/user-attachments/assets/d491bf93-465d-4457-af80-4c962772e220
 
-25 fps 预览 · [观看完整 30 fps 短片](docs/assets/short2wide-zh-CN.mp4) · [流程与边界](docs/showcase.md)
+[下载 20 秒短片 · 30 fps](docs/assets/short2wide-zh-CN.mp4) · [流程与边界](docs/showcase.md)
 
 > 需要自备 DreamAPI 密钥。应用在本机运行，生成时会把参考片段传至付费云服务。模型可能拒绝素材，也可能产生文字、动作或时序偏差。
 

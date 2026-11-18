@@ -4,9 +4,9 @@
 
 A local workspace for reframing short videos with **DreamAPI Seedance 2.5**. Import a video under five minutes, generate in segments, compare both sides, and export with the original soundtrack.
 
-[![Short2Wide product film](docs/assets/preview.en.gif)](docs/assets/short2wide-en.mp4)
+https://github.com/user-attachments/assets/b2b6c053-876b-4c61-84b5-139c0d3430ad
 
-25 fps preview · [Watch the full film at 30 fps](docs/assets/short2wide-en.mp4) · [Workflow and limitations](docs/showcase.md)
+[Download the 20-second film · 30 fps](docs/assets/short2wide-en.mp4) · [Workflow and limitations](docs/showcase.md)
 
 > Bring your own DreamAPI key. The application runs locally; generation uploads reference segments to a paid cloud service. The model can reject media or produce imperfect text, motion and timing.
 

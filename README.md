@@ -4,9 +4,9 @@
 
 A local workspace for reframing short videos with **DreamAPI Seedance 2.5**. Import a video under five minutes, generate in segments, compare both sides, and export with the original soundtrack.
 
-[![Short2Wide workspace](docs/assets/workspace.en.jpg)](https://cdn.jsdelivr.net/gh/Hy-1990/Short2Wide@v0.1.10/docs/assets/short2wide-en.mp4)
+[![Short2Wide workspace](docs/assets/workspace.en.jpg)](https://cdn.jsdelivr.net/gh/Hy-1990/Short2Wide@v0.1.11/docs/assets/short2wide-en.mp4)
 
-[Watch the 20-second demo](https://cdn.jsdelivr.net/gh/Hy-1990/Short2Wide@v0.1.10/docs/assets/short2wide-en.mp4) · [Download the 20-second film · 30 fps](docs/assets/short2wide-en.mp4) · [Workflow and limitations](docs/showcase.md)
+[Watch the 20-second demo](https://cdn.jsdelivr.net/gh/Hy-1990/Short2Wide@v0.1.11/docs/assets/short2wide-en.mp4) · [Download the 20-second film · 30 fps](docs/assets/short2wide-en.mp4) · [Workflow and limitations](docs/showcase.md)
 
 > Bring your own DreamAPI key. The application runs locally; generation uploads reference segments to a paid cloud service. The model can reject media or produce imperfect text, motion and timing.
 
@@ -21,13 +21,15 @@ A local workspace for reframing short videos with **DreamAPI Seedance 2.5**. Imp
 
 ## Home and project library
 
-The left sidebar separates **Home** from **Projects**. Home offers video import and the six most recent projects. Projects shows the complete library with name search and exported/unfinished filters. Cards wrap into additional rows as the library grows; the project count stays visible in navigation. Open a card to continue, or download a completed export directly.
+The homepage plays the complete 9:16 Cloudwalk source alongside its actual 16:9 export. Pause the comparison to inspect the composition at the same timestamp.
 
-**New reframe** returns to and focuses the import field. **How to use** opens the workflow guide. Narrow desktop windows keep the sidebar; only screens 560 px wide or less use compact top navigation. Theme, language and DreamAPI controls remain available.
+The six most recently updated projects appear below the preview. Select a thumbnail or title to resume editing, or download a finished export directly from its row. **New reframe** opens the link and file importer. The importer also appears on Home when your library is empty.
+
+**Projects** opens the full library with search and status filters. **How to use** opens the workflow guide. On phones, navigation moves to the top.
 
 ![Local project library](docs/assets/home.en.jpg)
 
-Use the trash button on a project card to delete it. A second confirmation names the project; **Cancel** keeps it unchanged. Confirming removes it from Home and Projects and moves its files into the local recovery folder. Processing projects cannot be deleted. Deleting a project does not cancel a previously submitted cloud generation task. See recovery paths below.
+Use the trash button beside a project to delete it. A second confirmation names the project; **Cancel** keeps it unchanged. Confirming removes it from Home and Projects and moves its files into the local recovery folder. Processing projects cannot be deleted. Deleting a project does not cancel a previously submitted cloud generation task. See recovery paths below.
 
 ## Install and run
 

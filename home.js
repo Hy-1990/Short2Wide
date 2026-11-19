@@ -38,8 +38,9 @@ form.addEventListener('submit',async event=>{
 
 
 window.reframeI18n.addMessages({
+ '云上栈道':'Cloudwalk','暂停示例':'Pause preview','播放示例':'Play preview','原片与成片对照':'Original and export comparison','左侧是完整竖屏原片，右侧是同一时刻的横屏改编':'Full portrait original on the left and the landscape export at the same timestamp on the right','成片':'Export',
  '开始新的改编':'Start a new reframe','请先粘贴视频链接，或选择一个本地视频。':'Paste a video link or choose a local video.','新建改编':'New reframe','首页':'Home','项目':'Projects','主导航':'Main navigation','Short2Wide 首页':'Short2Wide home','使用说明':'How to use',
- '转换画幅，保留原声。':'A new frame. Your original soundtrack.','查看全部':'View all','全部项目':'All projects','最近项目':'Recent projects',
+ '查看全部':'View all','全部项目':'All projects','最近项目':'Recent projects',
  '搜索项目名称':'Search projects','项目状态':'Project status','全部状态':'All statuses','未完成':'Unfinished','清除筛选':'Clear filters',
  '正在准备':'Preparing…','尚未分段':'Not segmented yet','没有匹配的项目':'No matching projects','试试其他名称，或清除筛选条件。':'Try another name or clear the filters.',
  '还没有项目':'No projects yet','导入视频后，项目会保存在这里。':'Your imported videos will appear here.','读取本机项目…':'Loading local projects…',
@@ -110,7 +111,10 @@ function projectCard(project){
  const duration=project.duration?`${String(Math.floor(project.duration/60)).padStart(2,'0')}:${String(Math.floor(project.duration%60)).padStart(2,'0')}`:'—';
  const summary=element('span','',`${duration} · ${project.ratio}`);summary.dataset.noTranslate='';
  const progress=element('span','',project.segment_count?(tr.language()==='en'?`${project.generated_count}/${project.segment_count} generated`:`已生成 ${project.generated_count}/${project.segment_count}`):t(project.status==='importing'||project.busy?'正在准备':'尚未分段'));progress.dataset.noTranslate='';
- meta.append(summary,progress);link.append(image,title,meta);
+ meta.append(summary);
+ if(currentView==='home')meta.append(badge);
+ if(currentView!=='home'||!project.export_ready)meta.append(progress);
+ link.append(image,title,meta);
  const bottom=element('div','project-card-bottom'),date=new Date(project.updated*1000),time=element('time');time.dateTime=date.toISOString();
  time.textContent=new Intl.DateTimeFormat(tr.language()==='en'?'en-US':'zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(date);time.dataset.noTranslate='';
  const action=element('a','',t(project.export_ready?'下载成片':'继续编辑'));action.href=project.export_ready?`/media/${project.id}/export.mp4`:`project.html?id=${project.id}`;if(project.export_ready)action.download='reframed.mp4';
@@ -123,6 +127,11 @@ function projectCard(project){
 }
 function drawProjects(){
  const t=window.reframeI18n.t,all=currentView==='projects';
+ const home=currentView==='home';
+ const emptyHome=home && projectsLoaded && !projectsError && projects.length===0;
+ document.querySelector('#new-project').hidden=!(currentView==='new'||emptyHome);
+ document.querySelector('#project-library').hidden=!(all||(home&&!emptyHome));
+ document.querySelector('#all-projects-link').hidden=!home||projects.length<=6;
  document.querySelector('#navigation-project-count').textContent=projectsLoaded?String(projects.length):'';
  let visible=projects;
  if(all){const query=search.value.trim().toLocaleLowerCase();visible=projects.filter(p=>(!query||(p.name==='Link import'?t('视频项目'):p.name).toLocaleLowerCase().includes(query))&&(statusFilter.value==='all'||(statusFilter.value==='exported'?p.export_ready:!p.export_ready)))}else visible=projects.slice(0,6);
@@ -136,15 +145,42 @@ function drawProjects(){
  projectsGrid.replaceChildren(...visible.map(projectCard));
 }
 function focusImport(){source.focus();source.scrollIntoView({block:'center'})}
+const intro = document.querySelector('#home-intro');
+const film = document.querySelector('#intro-film');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const previewToggle = document.querySelector('#preview-toggle');
+let previewEnabled = !reducedMotion.matches;
+function reflectPlayback() {
+  previewToggle.classList.toggle('is-paused', film.paused);
+  previewToggle.setAttribute('aria-label', window.reframeI18n.t(film.paused ? '播放示例' : '暂停示例'));
+}
+previewToggle.addEventListener('click', () => {
+  previewEnabled = film.paused;
+  updatePreview();
+});
+film.addEventListener('play', reflectPlayback);
+film.addEventListener('pause', reflectPlayback);
+function updatePreview() {
+  reflectPlayback();
+  if (intro.hidden || document.hidden || !previewEnabled) {
+    film.pause();
+    return;
+  }
+  if (!film.hasAttribute('src')) film.src = 'assets/cloudwalk-comparison.mp4';
+  film.play().catch(() => {}); // Browsers that block autoplay can still show the poster.
+}
+document.addEventListener('visibilitychange', updatePreview);
+reducedMotion.addEventListener('change', () => { previewEnabled = !reducedMotion.matches; updatePreview(); });
+
 function route(){
- const hash=location.hash.slice(1);currentView=['projects','help'].includes(hash)?hash:'home';const t=window.reframeI18n.t;
- document.querySelector('#page-title').textContent=t(currentView==='projects'?'项目':currentView==='help'?'使用说明':'首页');
- document.querySelector('#new-project').hidden=currentView!=='home';
- document.querySelector('#project-library').hidden=currentView==='help';
+ const hash=location.hash.slice(1);currentView=['projects','help','new'].includes(hash)?hash:'home';const t=window.reframeI18n.t;
+ document.body.dataset.view=currentView;
+ intro.hidden=currentView!=='home';
+ updatePreview();
+ document.querySelector('#page-title').textContent=t(currentView==='projects'?'项目':currentView==='help'?'使用说明':currentView==='new'?'新建改编':'首页');
  document.querySelector('#usage-guide').hidden=currentView!=='help';
  document.querySelector('#project-filters').hidden=currentView!=='projects';
  document.querySelector('#projects-title').textContent=t(currentView==='projects'?'全部项目':'最近项目');
- document.querySelector('#all-projects-link').hidden=currentView!=='home';
  document.querySelector('#refresh-projects').hidden=currentView!=='projects'&&!projectsError;
  document.querySelectorAll('[data-navigation]').forEach(link=>{if(link.dataset.navigation===currentView)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current')});
  drawProjects();if(hash==='new')focusImport();

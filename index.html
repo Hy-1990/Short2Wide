@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6f5f1"><meta name="description" content="把已有视频改成新的画幅，保留原音，逐段核对"><title>画幅工作台</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><script src="preferences.js"></script><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="settings.css"><link rel="stylesheet" href="home.css?v=0.1.8-32a8d8cc"><script src="i18n.js" defer></script><script src="ui-feedback.js" defer></script><script src="settings.js" defer></script><script src="home.js?v=0.1.8-6214ab9b" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f6f5f1"><meta name="description" content="把已有视频改成新的画幅，保留原音，逐段核对"><title>画幅工作台</title><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><script src="preferences.js"></script><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="settings.css"><link rel="stylesheet" href="home.css?v=screening-room"><script src="i18n.js" defer></script><script src="ui-feedback.js" defer></script><script src="settings.js" defer></script><script src="home.js?v=screening-room" defer></script></head>
 <body class="home-page">
 <a class="skip-link" href="#home-main">跳到主要内容</a>
 <svg class="svg-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -17,7 +17,7 @@
 </defs></svg>
 <aside class="home-sidebar">
   <a class="home-wordmark" href="#home" aria-label="Short2Wide 首页"><svg><use href="#i-frame"/></svg><span data-no-translate>Short2Wide</span></a>
-  <a class="sidebar-create button button-primary" href="#new"><svg><use href="#i-plus"/></svg><span>新建改编</span></a>
+  <a class="sidebar-create button button-primary" href="#new" data-navigation="new"><svg><use href="#i-plus"/></svg><span>新建改编</span></a>
   <nav class="sidebar-navigation" aria-label="主导航">
     <a href="#home" data-navigation="home" aria-current="page"><svg><use href="#i-home"/></svg><span>首页</span></a>
     <a href="#projects" data-navigation="projects"><svg><use href="#i-grid"/></svg><span>项目</span><span id="navigation-project-count" class="navigation-count" data-no-translate></span></a>
@@ -27,9 +27,23 @@
 <div class="home-shell">
   <header class="home-header"><h1 id="page-title">首页</h1><div data-app-controls></div></header>
   <main id="home-main" class="home-content">
-    <section id="new-project" class="new-project" aria-labelledby="import-title">
+    <section id="home-intro" class="home-intro" aria-label="原片与成片对照" hidden>
+      <div class="intro-heading">
+        <h2>云上栈道</h2>
+        <button id="preview-toggle" type="button" aria-label="暂停示例" aria-controls="intro-film">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pause-mark" d="M9 5v14m6-14v14"/><path class="play-mark" d="m8 5 11 7-11 7z"/></svg>
+        </button>
+      </div>
+      <figure class="intro-comparison">
+        <video id="intro-film" width="914" height="384" muted playsinline loop preload="none" poster="assets/cloudwalk-comparison.jpg" aria-label="左侧是完整竖屏原片，右侧是同一时刻的横屏改编"></video>
+        <figcaption>
+          <span><em>9:16</em> <span>原片</span></span>
+          <span><em>16:9</em> <span>成片</span></span>
+        </figcaption>
+      </figure>
+    </section>
+    <section id="new-project" class="new-project" hidden aria-labelledby="import-title">
       <h2 id="import-title">开始新的改编</h2>
-      <p class="import-description">转换画幅，保留原声。</p>
 <form id="import-video" class="import-form" novalidate><label class="sr-only" for="home-source">视频链接</label><div class="import-input-wrap"><svg><use href="#i-link"/></svg><input id="home-source" type="url" placeholder="粘贴 YouTube / TikTok 链接" autocomplete="off" aria-describedby="import-help import-error"><button type="submit" class="button button-primary"><span>开始改编</span><svg><use href="#i-arrow"/></svg></button></div><div class="home-import-options"><div class="home-ratios" role="group" aria-label="目标画幅"><button type="button" class="active" data-home-ratio="16:9" aria-pressed="true"><span class="format-icon horizontal"></span><span>横屏</span><small>16:9</small></button><button type="button" data-home-ratio="9:16" aria-pressed="false"><span class="format-icon vertical"></span><span>竖屏</span><small>9:16</small></button></div><button type="button" id="home-upload" class="local-upload"><svg><use href="#i-upload"/></svg><span id="home-file-name">上传视频</span></button><input id="home-file" type="file" accept="video/*" hidden></div><p id="import-error" class="home-error" role="alert" hidden></p><p class="import-help" id="import-help">支持小于5分钟的视频</p></form>
     </section>
     <section id="project-library" class="project-library" aria-labelledby="projects-title">
